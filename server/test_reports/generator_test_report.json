@@ -1,0 +1,272 @@
+[
+    {
+        "test_case": "GEN-001",
+        "generator": "address.city",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "South Rachael",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-002",
+        "generator": "address.country",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Palau",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-003",
+        "generator": "address.street",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "866 Christina Street Apt. 266",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-004",
+        "generator": "address.zipcode",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "14576",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-005",
+        "generator": "choice.picker",
+        "data_type": "string",
+        "options": "{\"choices\": [\"Active\", \"Inactive\"]}",
+        "backend_value": "Active",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-006",
+        "generator": "commerce.product_name",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Self-enabling needs-based middleware",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-007",
+        "generator": "commerce.price",
+        "data_type": "decimal",
+        "options": "{\"decimal_places\": 2, \"maximum\": 100, \"minimum\": 10}",
+        "backend_value": "17.49",
+        "python_type": "Decimal",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-008",
+        "generator": "commerce.category",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Food",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-009",
+        "generator": "commerce.currency",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "JPY",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-010",
+        "generator": "company.name",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Gardner-Guerra",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-011",
+        "generator": "datetime.date",
+        "data_type": "date",
+        "options": "{}",
+        "backend_value": "2024-02-25",
+        "python_type": "date",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-012",
+        "generator": "datetime.datetime",
+        "data_type": "datetime",
+        "options": "{}",
+        "backend_value": "2024-05-06T06:10:52.977649",
+        "python_type": "datetime",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-013",
+        "generator": "internet.email",
+        "data_type": "string",
+        "options": "{\"domain\": \"example.com\"}",
+        "backend_value": "brandongonzalez@example.com",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-014",
+        "generator": "internet.url",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "https://www.parsons.biz/",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-015",
+        "generator": "internet.domain",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "park.com",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-016",
+        "generator": "internet.phone",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "+1-932-710-1721x72369",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-017",
+        "generator": "person.first_name",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Anthony",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-018",
+        "generator": "person.last_name",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Fitzpatrick",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-019",
+        "generator": "person.full_name",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Jesus Houston",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-020",
+        "generator": "person.username",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "eandrews",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-021",
+        "generator": "person.job_title",
+        "data_type": "string",
+        "options": "{}",
+        "backend_value": "Community development worker",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-022",
+        "generator": "random.integer",
+        "data_type": "integer",
+        "options": "{\"maximum\": 100, \"minimum\": 10}",
+        "backend_value": 38,
+        "python_type": "int",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-023",
+        "generator": "random.decimal",
+        "data_type": "decimal",
+        "options": "{\"decimal_places\": 2, \"maximum\": 100, \"minimum\": 10}",
+        "backend_value": "60.96",
+        "python_type": "Decimal",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-024",
+        "generator": "random.boolean",
+        "data_type": "boolean",
+        "options": "{\"true_probability\": 50}",
+        "backend_value": false,
+        "python_type": "bool",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-025",
+        "generator": "uuid.v4",
+        "data_type": "uuid",
+        "options": "{}",
+        "backend_value": "370c9abe-a868-459d-8cbe-7a2d6bd326f9",
+        "python_type": "UUID",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-026",
+        "generator": "text.sentence",
+        "data_type": "string",
+        "options": "{\"words\": 5}",
+        "backend_value": "Maybe firm establish professor.",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    },
+    {
+        "test_case": "GEN-027",
+        "generator": "text.paragraph",
+        "data_type": "string",
+        "options": "{\"sentences\": 3}",
+        "backend_value": "Police stay prove hour contain Mrs important.",
+        "python_type": "str",
+        "status": "PASS",
+        "error": ""
+    }
+]

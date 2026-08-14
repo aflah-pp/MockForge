@@ -1,0 +1,24 @@
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "**/migrations",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 88
+
+extend-exclude = '''
+(
+  migrations
+)
+'''

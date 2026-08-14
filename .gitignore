@@ -1,0 +1,63 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+
+# Python tooling
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Frontend tooling
+.eslintcache
+.stylelintcache
+
+# Editors
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

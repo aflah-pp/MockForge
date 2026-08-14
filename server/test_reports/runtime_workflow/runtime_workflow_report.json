@@ -1,0 +1,288 @@
+{
+    "report": "MockForge Runtime Workflow",
+    "version": "1.0",
+    "status": "PASS",
+    "workflow": {
+        "user": {
+            "id": "f140f7e1-d1ff-4b3b-98d6-c8cd8c4be9cc",
+            "username": "workflow-user",
+            "email": "workflow@example.com"
+        },
+        "project": {
+            "id": "310c4a17-594c-4044-b28a-172b7d2a9036",
+            "name": "Workflow Demo Project",
+            "slug": "workflow-demo",
+            "is_published": true
+        },
+        "resource": {
+            "id": "c10c8bed-c90e-4560-9afe-67c4580171bd",
+            "name": "Products",
+            "slug": "products",
+            "is_published": true
+        },
+        "fields": [
+            {
+                "field": "ID",
+                "slug": "id",
+                "data_type": "uuid",
+                "generator": "uuid.v4",
+                "options": {},
+                "display_order": 1,
+                "status": "PASS"
+            },
+            {
+                "field": "Name",
+                "slug": "name",
+                "data_type": "string",
+                "generator": "person.full_name",
+                "options": {},
+                "display_order": 2,
+                "status": "PASS"
+            },
+            {
+                "field": "Email",
+                "slug": "email",
+                "data_type": "string",
+                "generator": "internet.email",
+                "options": {
+                    "domain": "example.com"
+                },
+                "display_order": 3,
+                "status": "PASS"
+            },
+            {
+                "field": "Price",
+                "slug": "price",
+                "data_type": "decimal",
+                "generator": "commerce.price",
+                "options": {
+                    "minimum": 10,
+                    "maximum": 100,
+                    "decimal_places": 2
+                },
+                "display_order": 4,
+                "status": "PASS"
+            },
+            {
+                "field": "Active",
+                "slug": "active",
+                "data_type": "boolean",
+                "generator": "random.boolean",
+                "options": {
+                    "true_probability": 50
+                },
+                "display_order": 5,
+                "status": "PASS"
+            },
+            {
+                "field": "Created At",
+                "slug": "created-at",
+                "data_type": "datetime",
+                "generator": "datetime.datetime",
+                "options": {},
+                "display_order": 6,
+                "status": "PASS"
+            }
+        ],
+        "endpoint": {
+            "method": "GET",
+            "url": "/api/v1/workflow-demo/products/",
+            "count": 5,
+            "status_code": 200
+        },
+        "generated_records": [
+            {
+                "id": "24b3e164-f10a-4c35-bdda-993314c47c84",
+                "name": "Stephanie Griffin",
+                "email": "cynthiamiller@example.com",
+                "price": 70.58,
+                "active": true,
+                "created-at": "2020-05-09T07:01:39.501523"
+            },
+            {
+                "id": "d36046e9-73cc-4c46-a855-93d166f98e62",
+                "name": "Jennifer Smith",
+                "email": "christinamueller@example.com",
+                "price": 94.93,
+                "active": true,
+                "created-at": "2019-03-17T04:31:55.701842"
+            },
+            {
+                "id": "914f78ca-00ce-4bb1-8706-fdb0821bd4d9",
+                "name": "Nicholas Gutierrez",
+                "email": "wsanchez@example.com",
+                "price": 87.12,
+                "active": false,
+                "created-at": "2022-04-29T09:50:26.539500"
+            },
+            {
+                "id": "72afb8b9-f049-4d8b-b79e-8a18791e6b7f",
+                "name": "Barbara Phillips",
+                "email": "duartemiguel@example.com",
+                "price": 78.44,
+                "active": true,
+                "created-at": "2023-11-06T17:42:49.881637"
+            },
+            {
+                "id": "a28b2b21-8c38-43b3-ac2a-97df2d92bcfc",
+                "name": "Tammy Orozco",
+                "email": "andrea16@example.com",
+                "price": 70.69,
+                "active": true,
+                "created-at": "2018-07-29T09:25:27.335424"
+            }
+        ]
+    },
+    "steps": [
+        {
+            "step": 1,
+            "stage": "User Creation",
+            "status": "PASS",
+            "details": {
+                "username": "workflow-user",
+                "email": "workflow@example.com",
+                "user_id": "f140f7e1-d1ff-4b3b-98d6-c8cd8c4be9cc"
+            }
+        },
+        {
+            "step": 2,
+            "stage": "Project Creation",
+            "status": "PASS",
+            "details": {
+                "project": "Workflow Demo Project",
+                "slug": "workflow-demo",
+                "published": true,
+                "project_id": "310c4a17-594c-4044-b28a-172b7d2a9036"
+            }
+        },
+        {
+            "step": 3,
+            "stage": "Resource Creation",
+            "status": "PASS",
+            "details": {
+                "resource": "Products",
+                "slug": "products",
+                "published": true,
+                "resource_id": "c10c8bed-c90e-4560-9afe-67c4580171bd"
+            }
+        },
+        {
+            "step": 4,
+            "stage": "Field Creation",
+            "status": "PASS",
+            "details": {
+                "field_count": 6,
+                "fields": [
+                    {
+                        "field": "ID",
+                        "slug": "id",
+                        "data_type": "uuid",
+                        "generator": "uuid.v4",
+                        "options": {},
+                        "display_order": 1,
+                        "status": "PASS"
+                    },
+                    {
+                        "field": "Name",
+                        "slug": "name",
+                        "data_type": "string",
+                        "generator": "person.full_name",
+                        "options": {},
+                        "display_order": 2,
+                        "status": "PASS"
+                    },
+                    {
+                        "field": "Email",
+                        "slug": "email",
+                        "data_type": "string",
+                        "generator": "internet.email",
+                        "options": {
+                            "domain": "example.com"
+                        },
+                        "display_order": 3,
+                        "status": "PASS"
+                    },
+                    {
+                        "field": "Price",
+                        "slug": "price",
+                        "data_type": "decimal",
+                        "generator": "commerce.price",
+                        "options": {
+                            "minimum": 10,
+                            "maximum": 100,
+                            "decimal_places": 2
+                        },
+                        "display_order": 4,
+                        "status": "PASS"
+                    },
+                    {
+                        "field": "Active",
+                        "slug": "active",
+                        "data_type": "boolean",
+                        "generator": "random.boolean",
+                        "options": {
+                            "true_probability": 50
+                        },
+                        "display_order": 5,
+                        "status": "PASS"
+                    },
+                    {
+                        "field": "Created At",
+                        "slug": "created-at",
+                        "data_type": "datetime",
+                        "generator": "datetime.datetime",
+                        "options": {},
+                        "display_order": 6,
+                        "status": "PASS"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 5,
+            "stage": "Public API Request",
+            "status": "PASS",
+            "details": {
+                "method": "GET",
+                "url": "/api/v1/workflow-demo/products/",
+                "count": 5,
+                "status_code": 200
+            }
+        },
+        {
+            "step": 6,
+            "stage": "Mock Data Generation",
+            "status": "PASS",
+            "details": {
+                "records_generated": 5,
+                "fields_returned": [
+                    "id",
+                    "name",
+                    "email",
+                    "price",
+                    "active",
+                    "created-at"
+                ],
+                "json_safe": true,
+                "decimal_serialized_as": "number",
+                "uuid_serialized_as": "string",
+                "datetime_serialized_as": "string"
+            }
+        },
+        {
+            "step": 7,
+            "stage": "JSON Response Export",
+            "status": "PASS",
+            "details": {
+                "file": "test_reports/runtime_workflow/runtime_api_response.json",
+                "records": 5,
+                "format": "JSON"
+            }
+        }
+    ],
+    "artifacts": {
+        "workflow_csv": "test_reports/runtime_workflow/runtime_workflow_report.csv",
+        "workflow_json": "test_reports/runtime_workflow/runtime_workflow_report.json",
+        "api_response_json": "test_reports/runtime_workflow/runtime_api_response.json"
+    }
+}

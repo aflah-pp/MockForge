@@ -21,6 +21,8 @@ db.sqlite3-journal
 media/
 staticfiles/
 static/
+server/test_reports/
+
 
 # Python tooling
 .ruff_cache/

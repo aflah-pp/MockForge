@@ -19,15 +19,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_name",
             "avatar",
             "is_verified",
-            "created_at",
-            "updated_at",
             "last_login",
         ]
         read_only_fields = [
             "id",
             "is_verified",
-            "created_at",
-            "updated_at",
             "last_login",
         ]
 

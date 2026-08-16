@@ -1,21 +1,13 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-
 import AppLayout from "@/components/layout/app-layout";
-import { Button } from "@/components/ui/button";
 import AccountCard from "@/features/accounts/components/AccountCard";
-import ApiLogo from "@/assets/Api.png";
-
-const mockUser = {
-  uuid: "user-001",
-  username: "aflah",
-  email: "aflah@example.com",
-  first_name: "Muhammed",
-  last_name: "Aflah",
-  avatar: ApiLogo,
-};
+import useAuthStore from "@/service/store/authStore";
+import { Button } from "@/components/ui/button";
 
 export default function AccountPage() {
+  const user = useAuthStore((state) => state.user);
+
   return (
     <AppLayout>
       <main className="h-[calc(100vh-5rem)] w-full overflow-hidden">
@@ -23,7 +15,7 @@ export default function AccountPage() {
           <div className="shrink-0">
             <div className="flex items-start gap-4">
               <Button variant="outline" size="icon" asChild className="shrink-0">
-                <Link to="/" aria-label="Back to settings">
+                <Link to="/" aria-label="Back to dashboard">
                   <ArrowLeft className="size-4" />
                 </Link>
               </Button>
@@ -39,7 +31,7 @@ export default function AccountPage() {
           </div>
 
           <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-6">
-            <AccountCard user={mockUser} />
+            <AccountCard user={user} />
           </div>
         </div>
       </main>

@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Camera } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Camera } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,10 @@ const accountSchema = z.object({
 
 export default function AccountForm({ initialData, onSubmit, isSubmitting = false }) {
   const fileInputRef = useRef(null);
+  const objectUrlRef = useRef(null);
+
   const [avatarPreview, setAvatarPreview] = useState(initialData?.avatar || "");
+
   const [avatarFile, setAvatarFile] = useState(null);
 
   const {
@@ -57,7 +60,21 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setAvatarPreview(initialData.avatar || "");
+    setAvatarFile(null);
+
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
   }, [initialData, reset]);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
 
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
@@ -74,8 +91,16 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
       return;
     }
 
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    objectUrlRef.current = previewUrl;
+
     setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    setAvatarPreview(previewUrl);
   };
 
   const submitForm = (data) => {
@@ -93,12 +118,13 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
     onSubmit(formData);
   };
 
+  const firstName = initialData?.first_name || "";
+  const lastName = initialData?.last_name || "";
+  const username = initialData?.username || "User";
+
   const initials =
-    `${initialData?.first_name || ""}${initialData?.last_name || ""}`
-      .trim()
-      .slice(0, 2)
-      .toUpperCase() ||
-    initialData?.username?.slice(0, 2).toUpperCase() ||
+    [firstName[0], lastName[0]].filter(Boolean).join("").toUpperCase() ||
+    username.slice(0, 2).toUpperCase() ||
     "U";
 
   return (
@@ -106,7 +132,8 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative">
           <Avatar className="size-24">
-            <AvatarImage src={avatarPreview} alt={initialData?.username || "User"} />
+            <AvatarImage src={avatarPreview || undefined} alt={username} />
+
             <AvatarFallback className="text-xl">{initials}</AvatarFallback>
           </Avatar>
 
@@ -114,7 +141,8 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isSubmitting}
-            className="absolute right-0 bottom-0 flex size-8 items-center justify-center rounded-full border bg-background shadow-sm transition-colors hover:bg-muted"
+            className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border bg-background shadow-sm transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+            aria-label="Change profile picture"
           >
             <Camera className="size-4" />
           </button>
@@ -122,7 +150,7 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             className="hidden"
             onChange={handleAvatarChange}
           />
@@ -172,6 +200,7 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
             id="first_name"
             autoComplete="given-name"
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.first_name)}
             {...register("first_name")}
           />
 
@@ -187,6 +216,7 @@ export default function AccountForm({ initialData, onSubmit, isSubmitting = fals
             id="last_name"
             autoComplete="family-name"
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.last_name)}
             {...register("last_name")}
           />
 

@@ -1,20 +1,46 @@
 import { useState } from "react";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import AppLayout from "@/components/layout/app-layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import DangerActionCard from "@/features/accounts/components/DangerActionCard";
+import { deactivateAccount } from "@/service/endpoints/auth";
+import useAuthStore from "@/service/store/authStore";
 
 export default function DangerSettingsPage() {
+  const navigate = useNavigate();
+  const { clearAuth } = useAuthStore();
   const [isDeactivating, setIsDeactivating] = useState(false);
+  const [error, setError] = useState("");
 
   const handleDeactivateAccount = async () => {
     setIsDeactivating(true);
+    setError("");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await deactivateAccount();
+
+      clearAuth();
+
+      navigate("/login", {
+        replace: true,
+        state: {
+          deactivated: true,
+        },
+      });
+    } catch (err) {
+      const responseData = err?.response?.data;
+
+      if (responseData?.detail) {
+        setError(
+          Array.isArray(responseData.detail)
+            ? responseData.detail.join(" ")
+            : String(responseData.detail),
+        );
+      } else {
+        setError("Unable to deactivate your account. Please try again.");
+      }
     } finally {
       setIsDeactivating(false);
     }
@@ -54,6 +80,16 @@ export default function DangerSettingsPage() {
                   activated again.
                 </AlertDescription>
               </Alert>
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTriangle />
+
+                  <AlertTitle>Deactivation failed</AlertTitle>
+
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
 
               <DangerActionCard isSubmitting={isDeactivating} onConfirm={handleDeactivateAccount} />
             </div>

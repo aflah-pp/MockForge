@@ -1,10 +1,10 @@
-"use client";
-
 import { NavMain } from "@/components/nav-main";
 import { NavHelp } from "@/components/nav-helps";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
+
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
+
 import {
   TerminalSquareIcon,
   BotIcon,
@@ -15,14 +15,13 @@ import {
   ShieldCheckIcon,
   FileTextIcon,
 } from "lucide-react";
-import ApiLogo from "../assets/Api.png";
+
+import useAuthStore from "@/service/store/authStore";
+import { useAuth } from "@/contexts/AuthContext";
+
+import ApiLogo from "@/assets/Api.png";
 
 const data = {
-  user: {
-    name: "aflah",
-    email: "admin@mail.com",
-    avatar: ApiLogo,
-  },
   navMain: [
     {
       title: "Projects",
@@ -62,6 +61,7 @@ const data = {
       ],
     },
   ],
+
   navSecondary: [
     {
       title: "Support",
@@ -79,6 +79,7 @@ const data = {
       icon: <FileTextIcon />,
     },
   ],
+
   help: [
     {
       name: "Documentation V1.0",
@@ -92,7 +93,17 @@ const data = {
     },
   ],
 };
+
 export function AppSidebar({ ...props }) {
+  const user = useAuthStore((state) => state.user);
+  const { logout, logoutAll } = useAuth();
+
+  const sidebarUser = {
+    name: user?.username || "User",
+    email: user?.email || "",
+    avatar: user?.avatar || ApiLogo,
+  };
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -103,17 +114,22 @@ export function AppSidebar({ ...props }) {
 
           <div className="flex min-w-0 flex-col leading-tight">
             <span className="truncate text-sm font-semibold tracking-tight">MockForge</span>
+
             <span className="truncate text-xs text-muted-foreground">DashBoard V1.0</span>
           </div>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
+
         <NavHelp helps={data.help} />
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={sidebarUser} onLogout={logout} onLogoutAll={logoutAll} />
       </SidebarFooter>
     </Sidebar>
   );

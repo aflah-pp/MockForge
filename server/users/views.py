@@ -9,7 +9,7 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 from users.serializers import (
     ChangePasswordSerializer,
@@ -221,10 +221,7 @@ class LoginView(APIView):
 )
 class RefreshTokenView(APIView):
     """
-    Public endpoint for refreshing an expired access token.
-
-    The refresh token is never accepted through the request body.
-    It must be supplied through the configured HttpOnly cookie.
+    Refresh an access token using the HttpOnly refresh-token cookie.
     """
 
     permission_classes = [permissions.AllowAny]
@@ -241,51 +238,14 @@ class RefreshTokenView(APIView):
                 }
             )
 
+        serializer = TokenRefreshSerializer(
+            data={
+                "refresh": refresh_token,
+            }
+        )
+
         try:
-            refresh = RefreshToken(
-                refresh_token,
-            )
-
-            simple_jwt_settings = getattr(
-                settings,
-                "SIMPLE_JWT",
-                {},
-            )
-
-            rotate = simple_jwt_settings.get(
-                "ROTATE_REFRESH_TOKENS",
-                False,
-            )
-
-            if rotate:
-                refresh.blacklist()
-
-                new_refresh = RefreshToken.for_user(
-                    refresh.user,
-                )
-
-                response = Response(
-                    {
-                        "access": str(
-                            new_refresh.access_token,
-                        ),
-                    },
-                    status=status.HTTP_200_OK,
-                )
-
-                return set_refresh_cookie(
-                    response,
-                    str(new_refresh),
-                )
-
-            return Response(
-                {
-                    "access": str(
-                        refresh.access_token,
-                    ),
-                },
-                status=status.HTTP_200_OK,
-            )
+            serializer.is_valid(raise_exception=True)
 
         except TokenError:
             raise ValidationError(
@@ -293,6 +253,23 @@ class RefreshTokenView(APIView):
                     "detail": "Invalid or expired refresh token.",
                 }
             )
+
+        data = serializer.validated_data
+
+        response = Response(
+            {
+                "access": data["access"],
+            },
+            status=status.HTTP_200_OK,
+        )
+
+        if "refresh" in data:
+            return set_refresh_cookie(
+                response,
+                data["refresh"],
+            )
+
+        return response
 
 
 @extend_schema(
@@ -393,9 +370,7 @@ class LogoutAllView(APIView):
 @extend_schema(
     tags=["User Module"],
     summary="Get the current user's account",
-    description=(
-        "Returns the public account information of the currently " "authenticated user."
-    ),
+    description=("Returns the public account information of the currently " "authenticated user."),
 )
 class CurrentUserView(generics.RetrieveAPIView):
     """
@@ -503,8 +478,7 @@ class ChangePasswordView(APIView):
 
         response = Response(
             {
-                "message": "Password changed successfully. "
-                "All sessions have been logged out.",
+                "message": "Password changed successfully. " "All sessions have been logged out.",
             },
             status=status.HTTP_200_OK,
         )

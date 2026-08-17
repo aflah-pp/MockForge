@@ -1,4 +1,3 @@
-import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -7,52 +6,44 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# ENVIRONMENT SELECTION
-#
-# Development:
-#   DJANGO_ENV=development
-#
-# Production:
-#   DJANGO_ENV=production
-
-ENVIRONMENT = os.getenv("DJANGO_ENV", "development").lower()
-
-if ENVIRONMENT not in {"development", "production"}:
-    raise ValueError("DJANGO_ENV must be either 'development' or 'production'.")
-
-
 env = environ.Env(
     DEBUG=(bool, False),
 )
 
 
-if ENVIRONMENT == "production":
-    ENV_FILE = BASE_DIR / ".env.production"
-else:
-    ENV_FILE = BASE_DIR / ".env.development"
+ENVIRONMENT = env(
+    "DJANGO_ENV",
+    default="development",
+).lower()
+
+
+if ENVIRONMENT not in {"development", "production"}:
+    raise ValueError("DJANGO_ENV must be either 'development' or 'production'.")
+
+
+ENV_FILE = (
+    BASE_DIR / ".env.production"
+    if ENVIRONMENT == "production"
+    else BASE_DIR / ".env.development"
+)
 
 
 if ENV_FILE.exists():
     environ.Env.read_env(ENV_FILE)
 
 
-SECRET_KEY = env(
-    "SECRET_KEY", default="g%dl*iu9$l=6%6x)%p8!ku0lfjasci!fux-4k%i*u!*5#zk%44"
-)
+SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env.bool(
     "DEBUG",
-    default=False,
+    default=ENVIRONMENT == "development",
 )
+
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
-    default=[],
+    default=["localhost", "127.0.0.1"],
 )
-
-
-if ENVIRONMENT == "production" and DEBUG:
-    raise ValueError("DEBUG=True is not allowed when DJANGO_ENV=production.")
 
 
 INSTALLED_APPS = [
@@ -65,7 +56,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
-    "drf_spectacular",
     "users",
     "projects",
     "resources",
@@ -95,6 +85,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 ASGI_APPLICATION = "config.asgi.application"
 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -113,19 +104,18 @@ TEMPLATES = [
 ]
 
 
-DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-    )
-}
-
-
 if ENVIRONMENT == "production":
-    DATABASES["default"]["CONN_MAX_AGE"] = env.int(
-        "DB_CONN_MAX_AGE",
-        default=60,
-    )
+    DATABASES = {
+        "default": env.db("DATABASE_URL"),
+    }
+else:
+    DATABASES = {
+        "default": env.db(
+            "DATABASE_URL",
+            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        ),
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -145,6 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = env(
@@ -156,6 +147,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -164,20 +156,24 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": ("whitenoise.storage." "CompressedManifestStaticFilesStorage"),
+        "BACKEND": ("whitenoise.storage.CompressedManifestStaticFilesStorage"),
     },
 }
+
 
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -185,13 +181,12 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PARSER_CLASSES": (
         "rest_framework.parsers.JSONParser",
         "rest_framework.parsers.MultiPartParser",
         "rest_framework.parsers.FormParser",
     ),
-    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
+    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination",),
     "PAGE_SIZE": env.int(
         "API_PAGE_SIZE",
         default=20,
@@ -215,7 +210,6 @@ REST_FRAMEWORK = {
             default="120/min",
         ),
     },
-    "EXCEPTION_HANDLER": ("rest_framework.views.exception_handler"),
 }
 
 
@@ -224,13 +218,13 @@ SIMPLE_JWT = {
         minutes=env.int(
             "JWT_ACCESS_TOKEN_MINUTES",
             default=15,
-        )
+        ),
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
         days=env.int(
             "JWT_REFRESH_TOKEN_DAYS",
             default=7,
-        )
+        ),
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -249,140 +243,101 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS",
-    default=[],
+    default=[
+        "http://localhost:5173",
+    ],
 )
+
+
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "http://localhost:5173",
+    ],
+)
+
 
 CORS_ALLOW_CREDENTIALS = True
 
-SPECTACULAR_SETTINGS = {
-    "TITLE": "MockForge API",
-    "DESCRIPTION": (
-        "MockForge is a metadata-driven mock REST API platform "
-        "for developers. Create projects, define resources and fields, "
-        "and generate realistic mock API responses without building a backend."
-    ),
-    "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
-    "CONTACT": {
-        "name": "MockForge",
-    },
-    "LICENSE": {
-        "name": "MIT License",
-    },
-}
 
-EMAIL_BACKEND = env(
-    "EMAIL_BACKEND",
-    default="django.core.mail.backends.console.EmailBackend",
+JWT_REFRESH_COOKIE_NAME = env(
+    "JWT_REFRESH_COOKIE_NAME",
+    default="refresh_token",
 )
 
-EMAIL_HOST = env(
-    "EMAIL_HOST",
-    default="",
+
+JWT_REFRESH_COOKIE_MAX_AGE = env.int(
+    "JWT_REFRESH_COOKIE_MAX_AGE",
+    default=604800,
 )
 
-EMAIL_PORT = env.int(
-    "EMAIL_PORT",
-    default=587,
-)
 
-EMAIL_USE_TLS = env.bool(
-    "EMAIL_USE_TLS",
-    default=True,
-)
-
-EMAIL_USE_SSL = env.bool(
-    "EMAIL_USE_SSL",
+JWT_REFRESH_COOKIE_SECURE = env.bool(
+    "JWT_REFRESH_COOKIE_SECURE",
     default=False,
 )
 
-EMAIL_TIMEOUT = env.int(
-    "EMAIL_TIMEOUT",
-    default=10,
-)
 
-EMAIL_HOST_USER = env(
-    "EMAIL_HOST_USER",
-    default="",
-)
-
-EMAIL_HOST_PASSWORD = env(
-    "EMAIL_HOST_PASSWORD",
-    default="",
-)
-
-DEFAULT_FROM_EMAIL = env(
-    "DEFAULT_FROM_EMAIL",
-    default="webmaster@localhost",
-)
-
-JWT_REFRESH_COOKIE_NAME = "refresh_token"
-JWT_REFRESH_COOKIE_MAX_AGE = 86400 * 7
-JWT_REFRESH_COOKIE_SECURE = not DEBUG
-JWT_REFRESH_COOKIE_SAMESITE = "Lax"
-JWT_REFRESH_COOKIE_DOMAIN = None
-JWT_REFRESH_COOKIE_PATH = "/"
-
-LOG_LEVEL = env(
-    "LOG_LEVEL",
-    default="INFO",
+JWT_REFRESH_COOKIE_SAMESITE = env(
+    "JWT_REFRESH_COOKIE_SAMESITE",
+    default="Lax",
 )
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": ("{levelname} {asctime} " "{name} {message}"),
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-    },
-    "root": {
-        "handlers": [
-            "console",
-        ],
-        "level": LOG_LEVEL,
-    },
-    "loggers": {
-        "django": {
-            "handlers": [
-                "console",
-            ],
-            "level": LOG_LEVEL,
-            "propagate": False,
-        },
-        "django.request": {
-            "handlers": [
-                "console",
-            ],
-            "level": "WARNING",
-            "propagate": False,
-        },
-        "django.security": {
-            "handlers": [
-                "console",
-            ],
-            "level": "WARNING",
-            "propagate": False,
-        },
-    },
-}
+JWT_REFRESH_COOKIE_DOMAIN = env(
+    "JWT_REFRESH_COOKIE_DOMAIN",
+    default=None,
+)
 
 
-if ENVIRONMENT == "production":
+JWT_REFRESH_COOKIE_PATH = env(
+    "JWT_REFRESH_COOKIE_PATH",
+    default="/",
+)
 
-    if not SECRET_KEY:
-        raise ValueError("SECRET_KEY must be configured in production.")
 
-    if not ALLOWED_HOSTS:
-        raise ValueError("ALLOWED_HOSTS must be configured in production.")
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-    if not CORS_ALLOWED_ORIGINS:
-        raise ValueError("CORS_ALLOWED_ORIGINS must be configured in production.")
+DEFAULT_FROM_EMAIL = "noreply@mockforge.local"
+
+
+SECURE_SSL_REDIRECT = env.bool(
+    "SECURE_SSL_REDIRECT",
+    default=False,
+)
+
+
+SECURE_HSTS_SECONDS = env.int(
+    "SECURE_HSTS_SECONDS",
+    default=0,
+)
+
+
+SESSION_COOKIE_SECURE = env.bool(
+    "SESSION_COOKIE_SECURE",
+    default=False,
+)
+
+
+CSRF_COOKIE_SECURE = env.bool(
+    "CSRF_COOKIE_SECURE",
+    default=False,
+)
+
+
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+    "SECURE_CONTENT_TYPE_NOSNIFF",
+    default=True,
+)
+
+
+SECURE_REFERRER_POLICY = env(
+    "SECURE_REFERRER_POLICY",
+    default="strict-origin-when-cross-origin",
+)
+
+
+SECURE_PROXY_SSL_HEADER = (
+    "HTTP_X_FORWARDED_PROTO",
+    "https",
+)

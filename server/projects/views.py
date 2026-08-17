@@ -1,7 +1,6 @@
 import logging
 
 from django.core.exceptions import ValidationError as DjangoValidationError
-from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -18,40 +17,6 @@ from .service import ProjectService
 logger = logging.getLogger(__name__)
 
 
-@extend_schema_view(
-    list=extend_schema(
-        tags=["Project Module"],
-        summary="List the authenticated user's projects",
-        description=(
-            "Returns all active projects owned by the authenticated user. "
-            "Soft-deleted projects are excluded."
-        ),
-    ),
-    create=extend_schema(
-        tags=["Project Module"],
-        summary="Create a project",
-        description=(
-            "Creates a new project owned by the authenticated user. "
-            "The project starts unpublished."
-        ),
-    ),
-    retrieve=extend_schema(
-        tags=["Project Module"],
-        summary="Retrieve a project",
-        description=(
-            "Returns a project owned by the authenticated user using " "its slug."
-        ),
-    ),
-    destroy=extend_schema(
-        tags=["Project Module"],
-        summary="Delete a project",
-        description=(
-            "Soft-deletes a project. The project remains in the database "
-            "but is removed from normal project listings and public "
-            "mock API access."
-        ),
-    ),
-)
 class ProjectViewSet(viewsets.GenericViewSet):
     """
     API ViewSet for authenticated MockForge project management.
@@ -217,31 +182,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             status=status.HTTP_204_NO_CONTENT,
         )
 
-    @extend_schema(
-        tags=["Project Module"],
-        summary="Rename a project",
-        description=(
-            "Renames an active project. The project slug is regenerated "
-            "from the new name."
-        ),
-        request={
-            "application/json": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "New project name.",
-                    },
-                },
-                "required": [
-                    "name",
-                ],
-            },
-        },
-        responses={
-            200: ProjectDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["patch"],
@@ -291,17 +231,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @extend_schema(
-        tags=["Project Module"],
-        summary="Publish a project",
-        description=(
-            "Publishes an active project, making its generated mock "
-            "API eligible for public runtime access."
-        ),
-        responses={
-            200: ProjectDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["post"],
@@ -331,17 +260,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @extend_schema(
-        tags=["Project Module"],
-        summary="Unpublish a project",
-        description=(
-            "Unpublishes an active project. Its generated mock API "
-            "is no longer eligible for public runtime access."
-        ),
-        responses={
-            200: ProjectDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["post"],
@@ -371,14 +289,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @extend_schema(
-        tags=["Project Module"],
-        summary="Toggle project publication",
-        description=("Toggles the publication state of an active project."),
-        responses={
-            200: ProjectDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["post"],

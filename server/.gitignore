@@ -21,4 +21,5 @@ media/
 staticfiles/
 static/
 
-*.log
+*.logs
+*logs

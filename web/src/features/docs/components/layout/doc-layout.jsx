@@ -39,7 +39,7 @@ export default function DocLayout({ children }) {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink asChild>
-                  <Link to="/docs/introduction">Documentation</Link>
+                  <Link to="/docs">Documentation</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
 

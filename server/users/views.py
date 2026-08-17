@@ -2,7 +2,6 @@ import logging
 
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
-from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -101,11 +100,6 @@ def service_validation_error(exc):
     )
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Register a new user account",
-    description=("Creates a new MockForge user account. "),
-)
 class RegisterView(APIView):
     """
     Public endpoint for creating a new user account.
@@ -150,11 +144,6 @@ class RegisterView(APIView):
         )
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Authenticate user with JWT",
-    description=("Authenticates a user using username and password. "),
-)
 class LoginView(APIView):
     """
     Public endpoint for authenticating a user.
@@ -209,16 +198,6 @@ class LoginView(APIView):
         )
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Refresh the access token",
-    description=(
-        "Generates a new access token using the refresh token stored "
-        "in the HttpOnly browser cookie. When refresh-token rotation "
-        "is enabled, the existing refresh token is revoked and a new "
-        "refresh token is issued."
-    ),
-)
 class RefreshTokenView(APIView):
     """
     Refresh an access token using the HttpOnly refresh-token cookie.
@@ -272,14 +251,6 @@ class RefreshTokenView(APIView):
         return response
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Logout the current session",
-    description=(
-        "Revokes the refresh token associated with the current "
-        "browser session and removes the refresh-token cookie."
-    ),
-)
 class LogoutView(APIView):
     """
     Logout the currently authenticated browser session.
@@ -331,14 +302,6 @@ class LogoutView(APIView):
         return clear_refresh_cookie(response)
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Logout from all active sessions",
-    description=(
-        "Revokes all refresh tokens belonging to the authenticated "
-        "user and removes the current browser's refresh-token cookie."
-    ),
-)
 class LogoutAllView(APIView):
     """
     Revoke every active refresh-token session belonging to
@@ -367,13 +330,6 @@ class LogoutAllView(APIView):
         return clear_refresh_cookie(response)
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Get the current user's account",
-    description=(
-        "Returns the public account information of the currently " "authenticated user."
-    ),
-)
 class CurrentUserView(generics.RetrieveAPIView):
     """
     Return the authenticated user's public account information.
@@ -389,15 +345,6 @@ class CurrentUserView(generics.RetrieveAPIView):
         return self.request.user
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Update the current user's account",
-    description=(
-        "Updates editable profile information belonging to the "
-        "authenticated user. Supports JSON and multipart form data "
-        "for avatar uploads."
-    ),
-)
 class UserUpdateView(APIView):
     """
     Update the authenticated user's editable profile information.
@@ -438,16 +385,6 @@ class UserUpdateView(APIView):
         )
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Change the current user's password",
-    description=(
-        "Changes the authenticated user's password. "
-        "The current password must be supplied. After a successful "
-        "password change, all existing refresh-token sessions are "
-        "revoked."
-    ),
-)
 class ChangePasswordView(APIView):
     """
     Change the authenticated user's password.
@@ -489,11 +426,6 @@ class ChangePasswordView(APIView):
         return clear_refresh_cookie(response)
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Verify the current user's email",
-    description=("Marks the authenticated user's email address as verified. "),
-)
 class VerifyEmailView(APIView):
     """
     Verify the authenticated user's email address.
@@ -524,15 +456,6 @@ class VerifyEmailView(APIView):
         )
 
 
-@extend_schema(
-    tags=["User Module"],
-    summary="Deactivate the current user's account",
-    description=(
-        "Deactivates the authenticated user's account without "
-        "deleting the database record or application data. "
-        "All refresh-token sessions are revoked."
-    ),
-)
 class DeactivateAccountView(APIView):
     """
     Deactivate the authenticated user's account.

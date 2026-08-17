@@ -1,7 +1,6 @@
 import logging
 
 from django.core.exceptions import ValidationError as DjangoValidationError
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -24,49 +23,6 @@ from .service import ResourceService
 logger = logging.getLogger(__name__)
 
 
-@extend_schema_view(
-    list=extend_schema(
-        tags=["Resource Module"],
-        summary="List project resources",
-        description=(
-            "Returns all active resources belonging to the authenticated "
-            "user's project. Soft-deleted resources are excluded."
-        ),
-        parameters=[
-            OpenApiParameter(
-                name="project_slug",
-                type=str,
-                location=OpenApiParameter.PATH,
-                description="Project slug.",
-            ),
-        ],
-    ),
-    create=extend_schema(
-        tags=["Resource Module"],
-        summary="Create a resource",
-        description=(
-            "Creates a new resource under the authenticated user's "
-            "project. The resource slug is generated automatically "
-            "from its name."
-        ),
-    ),
-    retrieve=extend_schema(
-        tags=["Resource Module"],
-        summary="Retrieve a resource",
-        description=(
-            "Returns an active resource belonging to the authenticated "
-            "user's project."
-        ),
-    ),
-    destroy=extend_schema(
-        tags=["Resource Module"],
-        summary="Delete a resource",
-        description=(
-            "Soft-deletes the resource and its active fields. "
-            "The resource remains in the database for audit purposes."
-        ),
-    ),
-)
 class ResourceViewSet(viewsets.GenericViewSet):
     """
     API ViewSet for authenticated MockForge resource management.
@@ -269,31 +225,6 @@ class ResourceViewSet(viewsets.GenericViewSet):
             status=status.HTTP_204_NO_CONTENT,
         )
 
-    @extend_schema(
-        tags=["Resource Module"],
-        summary="Rename a resource",
-        description=(
-            "Renames an active resource. The resource slug is "
-            "regenerated automatically from the new name."
-        ),
-        request={
-            "application/json": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "New resource name.",
-                    },
-                },
-                "required": [
-                    "name",
-                ],
-            },
-        },
-        responses={
-            200: ResourceDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["patch"],
@@ -350,18 +281,6 @@ class ResourceViewSet(viewsets.GenericViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @extend_schema(
-        tags=["Resource Module"],
-        summary="Publish a resource",
-        description=(
-            "Publishes an active resource. The resource becomes "
-            "eligible for public mock API access when the parent "
-            "project is also published."
-        ),
-        responses={
-            200: ResourceDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["post"],
@@ -393,18 +312,6 @@ class ResourceViewSet(viewsets.GenericViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @extend_schema(
-        tags=["Resource Module"],
-        summary="Unpublish a resource",
-        description=(
-            "Unpublishes an active resource. The resource remains "
-            "available to its owner but is no longer eligible for "
-            "public mock API access."
-        ),
-        responses={
-            200: ResourceDetailSerializer,
-        },
-    )
     @action(
         detail=True,
         methods=["post"],
@@ -437,46 +344,6 @@ class ResourceViewSet(viewsets.GenericViewSet):
         )
 
 
-@extend_schema_view(
-    list=extend_schema(
-        tags=["Field Module"],
-        summary="List resource fields",
-        description=(
-            "Returns all active fields belonging to the specified "
-            "resource. Soft-deleted fields are excluded."
-        ),
-    ),
-    create=extend_schema(
-        tags=["Field Module"],
-        summary="Create a field",
-        description=(
-            "Creates a field under the specified resource. The field "
-            "slug is generated automatically and the generator "
-            "configuration is validated before persistence."
-        ),
-    ),
-    retrieve=extend_schema(
-        tags=["Field Module"],
-        summary="Retrieve a field",
-        description="Returns an active field using its slug.",
-    ),
-    partial_update=extend_schema(
-        tags=["Field Module"],
-        summary="Update a field",
-        description=(
-            "Updates an active field. Generator configuration is "
-            "revalidated whenever generator-related values change."
-        ),
-    ),
-    destroy=extend_schema(
-        tags=["Field Module"],
-        summary="Delete a field",
-        description=(
-            "Soft-deletes the specified field. The field remains "
-            "available for audit purposes."
-        ),
-    ),
-)
 class FieldViewSet(viewsets.GenericViewSet):
     """
     API ViewSet for authenticated MockForge field management.

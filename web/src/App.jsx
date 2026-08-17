@@ -43,7 +43,10 @@ function App() {
       <ScrollToTopOnNavigate />
       <Routes>
         {/* Documentation Routes */}
-        <Route path="/docs" element={<Navigate to="/docs/introduction" replace />} />
+        <Route
+          path="/docs"
+          element={<Navigate to="/docs/getting-started/introduction" replace />}
+        />
         <Route path="/docs/getting-started/introduction" element={<Introduction />} />
         <Route path="/docs/getting-started/installation" element={<Installation />} />
         <Route path="/docs/getting-started/quick-start" element={<QuickStart />} />
@@ -54,7 +57,7 @@ function App() {
         <Route path="/docs/reference/api" element={<ApiReference />} />
         <Route path="/docs/reference/generators" element={<GeneratorsReference />} />
         <Route path="/docs/roadmap" element={<Roadmap />} />
-        
+
         {/* Auth Routes */}
         <Route element={<PublicOnlyRoute />}>
           <Route path="/login" element={<Login />} />

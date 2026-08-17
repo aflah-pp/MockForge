@@ -7,87 +7,157 @@ const content = `
 
 Welcome to **MockForge**.
 
-MockForge is an open-source platform for creating mock REST APIs without building a backend from scratch.
+MockForge helps you create mock APIs without building the backend first.
 
-It is designed for developers who need a working API while building a frontend, mobile application, prototype, or testing environment.
+If you are building a frontend and need some API data, you can create it in MockForge and start using it immediately.
 
-## Why MockForge?
+## What can you do with MockForge?
 
-When building a frontend, you often need an API before the real backend is ready.
+You can:
 
-Normally, you might need to:
+- Create projects
+- Create API resources
+- Add fields to your resources
+- Choose how each field should generate data
+- Publish your resource
+- Get a mock API URL
+- Use that API in your application
 
-- Build a backend
-- Create database models
-- Add test data
-- Create API endpoints
-- Deploy the backend
-
-MockForge removes that work for simple mock APIs.
-
-You define what your API should look like, and MockForge generates realistic data for you.
-
-## How it works
-
-MockForge is built around three simple concepts:
+For example, if you are building an ecommerce application, you could create:
 
 \`\`\`text
-Project
-   ↓
-Resource
-   ↓
-Fields
+Ecommerce
+└── Product
+    ├── name
+    ├── price
+    ├── stock
+    └── image
 \`\`\`
 
-A **Project** represents an application or API.
+MockForge will generate data for these fields when your API is requested.
 
-A **Resource** represents something in your API, such as:
+## Why use MockForge?
+
+Imagine you are building a frontend and you need:
 
 \`\`\`text
-Product
-User
-Company
-Order
-Student
+GET /products
 \`\`\`
 
-A **Field** describes the data that belongs to a resource.
+But the real backend is not ready yet.
+
+Instead of waiting for the backend, you can create the same kind of API with MockForge.
+
+Your workflow becomes:
+
+\`\`\`text
+Frontend
+   ↓
+MockForge
+   ↓
+JSON data
+\`\`\`
+
+You can continue building your pages, tables, forms, loading states, and other frontend features while the real backend is being developed.
+
+## How MockForge works
+
+You only need to understand three things to get started.
+
+### Project
+
+A project is where you keep your API resources.
+
+For example:
+
+\`\`\`text
+Ecommerce
+\`\`\`
+
+### Resource
+
+A resource represents something your API provides.
 
 For example:
 
 \`\`\`text
 Product
-
-name
-price
-stock
-image
+User
+Order
+Category
 \`\`\`
 
-You can then choose how MockForge should generate the value for each field.
+### Field
 
-## Version 1
+Fields are the data inside a resource.
 
-MockForge V1 focuses on one thing:
+For example:
 
-> **Create a simple mock REST API quickly.**
+\`\`\`text
+Product
+├── name
+├── price
+├── stock
+└── image
+\`\`\`
 
-V1 includes:
+You then choose a generator for each field.
 
-- User authentication
-- Projects
-- Resources
-- Custom fields
-- Configurable data generators
-- Dynamic fake data
-- GET mock endpoints
-- Image URL and file URL fields
+For example:
 
-Advanced API features are outside the scope of V1.
+\`\`\`text
+name
+↓
+Full Name
+↓
+"John Smith"
+\`\`\`
 
-## What's next?
+## Your API
 
-Continue with **Installation** to set up MockForge.
+After creating your resource and fields, publish it and MockForge gives you a mock API endpoint.
+
+You can then use that endpoint from:
+
+- React
+- Vue
+- Angular
+- React Native
+- Flutter
+- JavaScript
+- Axios
+- Fetch
+- Postman
+- Any HTTP client
+
+## Does MockForge store fake records?
+
+No.
+
+You create the structure of your API in MockForge.
+
+When someone requests the mock endpoint, MockForge generates the data.
+
+You don't need to manually create hundreds of fake records.
+
+## What MockForge is for
+
+MockForge is mainly useful when:
+
+- Your frontend needs an API before the backend is ready.
+- You want realistic data while developing.
+- You want to quickly prototype an application.
+- You want a simple API for testing.
+
+MockForge is not meant to replace your production backend.
+
+It is a tool that helps you build and test applications faster.
+
+## Ready to start?
+
+If you are running MockForge yourself, continue with **Installation**.
+
+If MockForge is already running, go directly to **Quick Start**.
 `;
 
 function Introduction() {

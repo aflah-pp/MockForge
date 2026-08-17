@@ -21,7 +21,7 @@ export default function DocLayout({ children }) {
   const currentPage = docsPages.find((page) => page.url === location.pathname);
 
   const fallbackTitles = {
-    "/docs/getting-started": "Getting Started",
+    "/docs/introduction": "Introduction",
   };
   const title = currentPage?.title || fallbackTitles[location.pathname] || "Documentation";
 
@@ -39,7 +39,7 @@ export default function DocLayout({ children }) {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink asChild>
-                  <Link to="/docs/getting-started">Documentation</Link>
+                  <Link to="/docs/introduction">Documentation</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
 

@@ -9,11 +9,15 @@ import Login from "@/features/auth/Login";
 import Register from "@/features/auth/Register";
 import MainDashBoardPage from "@/features/dashboard/MainDashBoardPage";
 import ProjectsList from "@/features/dashboard/ProjectsList";
+import ConnectMockForge from "@/features/docs/pages/api/connect-mockforge";
+import DataGenerators from "@/features/docs/pages/build-doc/data-generators";
+import Fields from "@/features/docs/pages/build-doc/fields";
+import ProjectsResources from "@/features/docs/pages/build-doc/projects-resources";
 import Installation from "@/features/docs/pages/getting-started/installation";
 import Introduction from "@/features/docs/pages/getting-started/introduction";
-import ProjectStructure from "@/features/docs/pages/getting-started/project-structure";
 import QuickStart from "@/features/docs/pages/getting-started/quick-start";
-import GettingStarted from "@/features/docs/pages/GettingStarted";
+import ApiReference from "@/features/docs/pages/references/api-reference";
+import GeneratorsReference from "@/features/docs/pages/references/generator-reference";
 import Roadmap from "@/features/docs/pages/RoadMap";
 import ProjectDetailPage from "@/features/projects/ProjectDetail";
 import ProjectFormPage from "@/features/projects/ProjectFormPage";
@@ -39,13 +43,18 @@ function App() {
       <ScrollToTopOnNavigate />
       <Routes>
         {/* Documentation Routes */}
-        <Route path="/docs" element={<Navigate to="/docs/getting-started" replace />} />
-        <Route path="/docs/getting-started" element={<GettingStarted />} />
+        <Route path="/docs" element={<Navigate to="/docs/introduction" replace />} />
         <Route path="/docs/getting-started/introduction" element={<Introduction />} />
         <Route path="/docs/getting-started/installation" element={<Installation />} />
         <Route path="/docs/getting-started/quick-start" element={<QuickStart />} />
-        <Route path="/docs/getting-started/project-structure" element={<ProjectStructure />} />
+        <Route path="/docs/build/projects-resources" element={<ProjectsResources />} />
+        <Route path="/docs/build/fields" element={<Fields />} />
+        <Route path="/docs/build/data-generators" element={<DataGenerators />} />
+        <Route path="/docs/api/connect-mockforge" element={<ConnectMockForge />} />
+        <Route path="/docs/reference/api" element={<ApiReference />} />
+        <Route path="/docs/reference/generators" element={<GeneratorsReference />} />
         <Route path="/docs/roadmap" element={<Roadmap />} />
+        
         {/* Auth Routes */}
         <Route element={<PublicOnlyRoute />}>
           <Route path="/login" element={<Login />} />

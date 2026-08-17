@@ -5,129 +5,127 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # Installation
 
-Getting started with MockForge depends on what you want to do.
+There are currently two ways to use MockForge:
 
-If you only want to **use MockForge**, you can create an account and start from the dashboard.
+1. **Hosted MockForge**
+2. **Self-hosted MockForge**
 
-If you want to **develop MockForge locally**, follow the setup below.
+Choose the option that works for you.
 
-## Requirements
+## Hosted MockForge
 
-For local development, you will need:
+If you are using the hosted version of MockForge, you don't need to install anything.
+
+You don't need:
 
 - Python
 - Node.js
 - PostgreSQL
+- Django
+- React
+
+Just create an account and open the dashboard.
+
+From there you can:
+
+\`\`\`text
+Create Project
+      ↓
+Create Resource
+      ↓
+Add Fields
+      ↓
+Choose Generators
+      ↓
+Publish
+      ↓
+Use Your Mock API
+\`\`\`
+
+This is the easiest way to use MockForge.
+
+## Self-host MockForge
+
+If you want to run MockForge on your own machine, you can clone the project and run the frontend and backend yourself.
+
+### Requirements
+
+You need:
+
 - Git
+- Python 3.12+
+- Node.js 20+
+- npm
+- PostgreSQL
 
-MockForge uses:
+You don't need to know Django or React to use MockForge.
 
-- Django and Django REST Framework for the backend
-- React and Vite for the frontend
-- PostgreSQL for the database
+Those are the technologies used to build the platform.
 
-## Clone the repository
+## 1. Clone MockForge
 
-Clone the MockForge repository:
+Clone the repository:
 
 \`\`\`bash
 git clone <repository-url>
 cd MockForge
 \`\`\`
 
-The repository contains separate applications for the backend and frontend.
+The project has two main parts:
 
-## Backend setup
+\`\`\`text
+MockForge
+├── server
+└── web
+\`\`\`
 
-Move into the backend directory:
+The \`server\` directory contains the backend.
+
+The \`web\` directory contains the frontend.
+
+## 2. Set up the backend
+
+Open a terminal and go to the server:
 
 \`\`\`bash
 cd server
 \`\`\`
 
-Create and activate a Python virtual environment:
+Create a Python virtual environment:
 
 \`\`\`bash
-python -m venv venv
+python -m venv .venv
 \`\`\`
 
-Activate the virtual environment according to your operating system.
+Activate it.
 
-Install the backend dependencies:
+### macOS / Linux
+
+\`\`\`bash
+source .venv/bin/activate
+\`\`\`
+
+### Windows
+
+\`\`\`powershell
+.venv\\\\Scripts\\\\activate
+\`\`\`
+
+## 3. Install backend packages
+
+Install the required packages:
 
 \`\`\`bash
 pip install -r requirements.txt
 \`\`\`
 
-Configure your environment variables before starting Django.
+## 4. Configure the backend
 
-At minimum, the backend requires configuration for:
+MockForge uses environment variables for its configuration.
 
-- Django secret key
-- PostgreSQL database
-- JWT configuration
-- CORS configuration
+Set up your local environment according to the project's environment configuration.
 
-Run the database migrations:
-
-\`\`\`bash
-python manage.py migrate
-\`\`\`
-
-Start the Django development server:
-
-\`\`\`bash
-python manage.py runserver
-\`\`\`
-
-The backend will be available at:
-
-\`\`\`text
-http://127.0.0.1:8000
-\`\`\`
-
-## Frontend setup
-
-Open another terminal and move into the frontend directory:
-
-\`\`\`bash
-cd web
-\`\`\`
-
-Install the frontend dependencies:
-
-\`\`\`bash
-npm install
-\`\`\`
-
-Start the Vite development server:
-
-\`\`\`bash
-npm run dev
-\`\`\`
-
-The frontend will be available at the URL shown by Vite.
-
-## Database
-
-MockForge uses PostgreSQL for local development.
-
-Create a PostgreSQL database and configure its connection details in the backend environment.
-
-The Django application uses this database to store:
-
-- Users
-- Projects
-- Resources
-- Fields
-
-Generated mock data is not stored as individual records in V1. Mock responses are generated dynamically from the resource and field definitions.
-
-## Environment variables
-
-Do not commit secrets or local environment files to Git.
-
-Your local environment should contain the values required by the backend, such as:
+Your backend will need values such as:
 
 \`\`\`text
 SECRET_KEY
@@ -135,48 +133,178 @@ DATABASE_URL
 CORS_ALLOWED_ORIGINS
 \`\`\`
 
-Use your project's environment configuration to provide these values.
-
-## Verify the installation
-
-Once both applications are running:
-
-1. Open the MockForge frontend.
-2. Create an account.
-3. Log in to the dashboard.
-4. Create a project.
-5. Create a resource.
-6. Add fields.
-7. Generate your mock API.
-8. Open the generated GET endpoint.
-
-If the API returns JSON data, your local MockForge installation is working correctly.
-
-## Using MockForge
-
-You do not need to install an npm package or CLI to use the V1 platform.
-
-The V1 workflow is dashboard-based:
+For PostgreSQL, your database URL will look similar to:
 
 \`\`\`text
-Login
-  ↓
-Create Project
-  ↓
-Create Resource
-  ↓
-Add Fields
-  ↓
-Choose Generators
-  ↓
-Get Mock API URL
+DATABASE_URL=postgresql://username:password@localhost:5432/mockforge
 \`\`\`
 
-CLI tooling and package-based usage are not part of V1.
+Use your own PostgreSQL username, password, host, port, and database name.
+
+Do not commit your environment file or secrets to Git.
+
+## 5. Create the PostgreSQL database
+
+Create a PostgreSQL database for MockForge.
+
+For example:
+
+\`\`\`text
+mockforge
+\`\`\`
+
+Then point \`DATABASE_URL\` to that database.
+
+MockForge stores things such as:
+
+- Users
+- Projects
+- Resources
+- Fields
+- Generator configuration
+
+Mock data itself is generated when the API is requested.
+
+## 6. Run the database migrations
+
+From the \`server\` directory:
+
+\`\`\`bash
+python manage.py migrate
+\`\`\`
+
+This creates the required database tables.
+
+## 7. Start the backend
+
+Run:
+
+\`\`\`bash
+python manage.py runserver
+\`\`\`
+
+The backend will normally be available at:
+
+\`\`\`text
+http://127.0.0.1:8000
+\`\`\`
+
+Keep this terminal running.
+
+## 8. Start the frontend
+
+Open another terminal.
+
+From the MockForge project directory:
+
+\`\`\`bash
+cd web
+\`\`\`
+
+Install the frontend packages:
+
+\`\`\`bash
+npm install
+\`\`\`
+
+Start the development server:
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+Vite will show the frontend address in your terminal.
+
+It will normally look similar to:
+
+\`\`\`text
+http://localhost:5173
+\`\`\`
+
+Open that address in your browser.
+
+## 9. Check that everything works
+
+Once the frontend and backend are running:
+
+1. Open MockForge.
+2. Create an account.
+3. Sign in.
+4. Create a project.
+5. Create a resource.
+6. Add some fields.
+7. Choose generators.
+8. Publish the resource.
+9. Open the generated API URL.
+
+If the endpoint returns JSON data, your MockForge installation is working.
+
+## Hosted vs Self-hosted
+
+### Hosted
+
+Use the hosted version if you want the easiest setup.
+
+You only need:
+
+\`\`\`text
+Browser
+   ↓
+MockForge
+\`\`\`
+
+You don't have to manage the server or database yourself.
+
+### Self-hosted
+
+Use self-hosting if you want to run MockForge on your own machine or infrastructure.
+
+The setup is:
+
+\`\`\`text
+Browser
+   ↓
+MockForge Frontend
+   ↓
+MockForge Backend
+   ↓
+PostgreSQL
+\`\`\`
+
+You are responsible for running and maintaining these services.
+
+## Docker
+
+Docker support is **not available yet** in the current version of MockForge.
+
+The current self-hosted setup runs directly using:
+
+- Python
+- Node.js
+- PostgreSQL
+
+Docker support can be added in a future release.
+
+## Do I need to install anything in my React project?
+
+No.
+
+You don't need a MockForge npm package.
+
+Once you have a mock API URL, you can use it like any other API.
+
+For example:
+
+- Fetch
+- Axios
+- React Query
+- Any HTTP client
 
 ## Next step
 
-Continue with **Quick Start** to create your first mock API.
+If MockForge is running, continue with **Quick Start**.
+
+You will create your first mock API in a few minutes.
 `;
 
 function Installation() {
@@ -184,6 +312,7 @@ function Installation() {
     <DocLayout>
       <div className="mx-auto w-full max-w-4xl px-6 py-10">
         <MarkdownRenderer>{content}</MarkdownRenderer>
+
         <DocsPagination />
       </div>
     </DocLayout>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/theme-toggle";
 import ApiLogo from "../../assets/Api.png";
+import useAuthStore from "@/service/store/authStore";
 
 const endpoints = [
   {
@@ -47,6 +48,7 @@ function Github() {
 export default function Home() {
   const [menu, setMenu] = useState(false);
   const [endpoint, setEndpoint] = useState(0);
+  const { isAuthenticated } = useAuthStore();
 
   const current = endpoints[endpoint];
 
@@ -78,7 +80,6 @@ export default function Home() {
                 </span>
               </div>
             </Link>
-
             <nav className="hidden items-center gap-1 md:flex">
               <Link
                 to="/docs"
@@ -86,17 +87,27 @@ export default function Home() {
               >
                 Docs
               </Link>
+              {!isAuthenticated ? (
+                <>
+                  <Link
+                    to="/login"
+                    className="rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    Sign in
+                  </Link>
 
-              <Link
-                to="/login"
-                className="rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                Sign in
-              </Link>
-
-              <Button asChild size="sm" className="ml-2">
-                <Link to="/register">Get started</Link>
-              </Button>
+                  <Button asChild size="sm" className="ml-2">
+                    <Link to="/register">Get started</Link>
+                  </Button>
+                </>
+              ) : (
+                <Link
+                  to="/dashboard"
+                  className="rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  Dashboard
+                </Link>
+              )}
 
               <div className="ml-2 border-l border-border pl-2">
                 <ThemeToggle />
@@ -206,23 +217,13 @@ export default function Home() {
               </span>
 
               <span className="flex items-center gap-2">
-                <span className="size-1 rounded-full bg-[#F7931A]" />∞ / Resources
+                <span className="size-1 rounded-full bg-[#F7931A]" />02 / Resources
               </span>
 
               <span className="flex items-center gap-2">
                 <span className="size-1 rounded-full bg-[#F7931A]" />
-                JSON / Output
+                03 / JSON - Output
               </span>
-            </div>
-
-            <div className="mt-9 flex items-center gap-3 border-l-2 border-[#F7931A]/40 pl-4">
-              <Code2 className="size-4 shrink-0 text-[#F7931A]" />
-
-              <div className="font-mono text-[10px] leading-5 text-muted-foreground">
-                <span className="text-foreground">mockforge</span>
-                <span className="mx-1 text-[#F7931A]">$</span>
-                create project frontend-api
-              </div>
             </div>
           </div>
 
@@ -375,7 +376,7 @@ export default function Home() {
           <span className="text-border">/</span>
 
           <a
-            href="https://github.com"
+            href="https://github.com/aflah-pp/MockForge"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 transition-colors hover:text-foreground"

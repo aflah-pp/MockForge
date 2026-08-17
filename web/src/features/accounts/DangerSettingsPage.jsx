@@ -53,7 +53,7 @@ export default function DangerSettingsPage() {
           <div className="shrink-0">
             <div className="flex items-start gap-4">
               <Button variant="outline" size="icon" asChild className="shrink-0">
-                <Link to="/" aria-label="Back to settings">
+                <Link to="/account" aria-label="Back to settings">
                   <ArrowLeft className="size-4" />
                 </Link>
               </Button>

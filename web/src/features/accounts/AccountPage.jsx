@@ -15,7 +15,7 @@ export default function AccountPage() {
           <div className="shrink-0">
             <div className="flex items-start gap-4">
               <Button variant="outline" size="icon" asChild className="shrink-0">
-                <Link to="/" aria-label="Back to dashboard">
+                <Link to="/dashboard" aria-label="Back to dashboard">
                   <ArrowLeft className="size-4" />
                 </Link>
               </Button>

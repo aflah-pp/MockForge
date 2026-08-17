@@ -370,7 +370,9 @@ class LogoutAllView(APIView):
 @extend_schema(
     tags=["User Module"],
     summary="Get the current user's account",
-    description=("Returns the public account information of the currently " "authenticated user."),
+    description=(
+        "Returns the public account information of the currently " "authenticated user."
+    ),
 )
 class CurrentUserView(generics.RetrieveAPIView):
     """
@@ -478,7 +480,8 @@ class ChangePasswordView(APIView):
 
         response = Response(
             {
-                "message": "Password changed successfully. " "All sessions have been logged out.",
+                "message": "Password changed successfully. "
+                "All sessions have been logged out.",
             },
             status=status.HTTP_200_OK,
         )

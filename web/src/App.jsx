@@ -28,7 +28,9 @@ import NotFound from "@/pages/Page404";
 import PrivacyPolicyPage from "@/pages/policy/PrivacyPolicyPage";
 import TermsPage from "@/pages/policy/Terms";
 import SupportPage from "@/pages/support/SupportPage";
+import UpcomingFeatures from "@/pages/UpComing";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import PublicOnlyRoute from "@/routes/PublicOnlyRoute";
 import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 
 function App() {
@@ -45,9 +47,10 @@ function App() {
         <Route path="/docs/getting-started/project-structure" element={<ProjectStructure />} />
         <Route path="/docs/roadmap" element={<Roadmap />} />
         {/* Auth Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="*" element={<NotFound />} />
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
         {/* ProtectedRoutes */}
         <Route path="/" element={<Home />} />
         <Route element={<ProtectedRoute />}>
@@ -63,7 +66,6 @@ function App() {
           <Route path="settings/account/verify-email" element={<VerifyEmailPage />} />
           <Route path="/settings/danger" element={<DangerSettingsPage />} />
           <Route path="/account" element={<AccountPage />} />
-
           <Route path="/project/:projectSlug/resources/create" element={<ResourceFormPage />} />
           <Route
             path="/project/:projectSlug/resources/:resourceSlug"
@@ -77,14 +79,23 @@ function App() {
             path="/project/:projectSlug/resources/:resourceSlug/fields/:slug/edit"
             element={<FieldFormPage />}
           />
+          {/* About and Support pages */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/about/creator" element={<CreatorPage />} />
+          <Route path="/support" element={<SupportPage />} />
+          {/* Upcoming  */}
+          <Route path="/api/active" element={<UpcomingFeatures />} />
+          <Route path="/resource/templates" element={<UpcomingFeatures />} />
         </Route>
+        <Route path="/forgot-password" element={<UpcomingFeatures />} />
 
-        {/* Policy and other pages */}
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/about/creator" element={<CreatorPage />} />
+        {/* Policy */}
+
         <Route path="/policy" element={<PrivacyPolicyPage />} />
-        <Route path="/support" element={<SupportPage />} />
         <Route path="/terms" element={<TermsPage />} />
+
+        {/* 404 page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ContinueReading />
       <ScrollToTop />

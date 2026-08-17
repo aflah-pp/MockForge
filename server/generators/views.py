@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,38 +12,26 @@ class GeneratorListView(APIView):
     The generator registry is the single source of truth for all
     available generators.
 
-    This endpoint exposes safe generator metadata required by the
-    frontend to dynamically build field creation forms.
+    The endpoint exposes only safe metadata required by the frontend
+    to dynamically build field configuration forms.
 
-    Returned metadata includes:
-
-    - generator key
-    - supported data types
-    - supported configuration options
-
-    Generator implementation details are never exposed.
-
-    Authentication is required because generator metadata is part of
-    the authenticated MockForge application API.
+    Authentication is not required because generator metadata does not
+    expose project-specific or user-specific information.
     """
 
-    permission_classes = []
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         """
-        Return all registered generators.
+        Return registered generators.
 
-        The optional ``data_type`` query parameter can be used to
-        filter generators by their supported field data type.
+        An optional ``data_type`` query parameter filters generators
+        by supported field data type.
 
-        Example:
+        Examples:
 
-            GET /api/generators/
-            GET /api/generators/?data_type=string
-
-        Returns:
-            Response:
-                A list of generator metadata.
+            GET /api/v1/generators/
+            GET /api/v1/generators/?data_type=string
         """
 
         generators = get_generator_metadata()

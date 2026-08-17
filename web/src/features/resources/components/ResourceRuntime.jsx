@@ -4,24 +4,41 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function ResourceRuntime({ projectSlug, resource }) {
-  const [copied, setCopied] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(null);
+  const [recordCount, setRecordCount] = useState("5");
 
   const runtimeUrl = `${import.meta.env.VITE_API_BASE_URL}${projectSlug}/${resource.slug}/`;
+  const multipleRecordsUrl = `${runtimeUrl}?count=${recordCount}`;
 
-  const copyUrl = async () => {
-    await navigator.clipboard.writeText(runtimeUrl);
+  const handleCopy = async (url, type) => {
+    try {
+      await navigator.clipboard.writeText(url);
 
-    setCopied(true);
+      setCopiedUrl(type);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopiedUrl(null);
+      }, 1500);
+    } catch {
+      setCopiedUrl(null);
+    }
   };
 
   const openApi = () => {
     window.open(runtimeUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const openMultipleRecordsApi = () => {
+    window.open(multipleRecordsUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -44,8 +61,13 @@ export default function ResourceRuntime({ projectSlug, resource }) {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={copyUrl}>
-            {copied ? (
+          <Button
+            variant="outline"
+            className="flex-1"
+            disabled={!resource.is_published}
+            onClick={() => handleCopy(runtimeUrl, "single")}
+          >
+            {copiedUrl === "single" ? (
               <>
                 <Check className="mr-2 size-4" />
                 Copied
@@ -71,13 +93,80 @@ export default function ResourceRuntime({ projectSlug, resource }) {
         )}
 
         <div className="rounded-lg border p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-medium">Multiple records</span>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium">Multiple records</p>
+
+              <p className="mt-1 text-xs text-muted-foreground">
+                Choose how many records the API should return.
+              </p>
+            </div>
 
             <Badge variant="secondary">count</Badge>
           </div>
 
-          <p className="break-all font-mono text-xs text-muted-foreground">{runtimeUrl}?count=5</p>
+          <div className="space-y-3">
+            <Select
+              value={recordCount}
+              disabled={!resource.is_published}
+              onValueChange={(value) => {
+                setRecordCount(value);
+                setCopiedUrl(null);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select record count" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {Array.from({ length: 10 }, (_, index) => {
+                  const count = index + 1;
+
+                  return (
+                    <SelectItem key={count} value={String(count)}>
+                      {count} {count === 1 ? "record" : "records"}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+
+            <div className="rounded-md bg-muted/40 px-3 py-2">
+              <p className="break-all font-mono text-xs text-muted-foreground">
+                {multipleRecordsUrl}
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                disabled={!resource.is_published}
+                onClick={() => handleCopy(multipleRecordsUrl, "multiple")}
+              >
+                {copiedUrl === "multiple" ? (
+                  <>
+                    <Check className="mr-2 size-4" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-2 size-4" />
+                    Copy URL
+                  </>
+                )}
+              </Button>
+
+              <Button
+                className="flex-1"
+                disabled={!resource.is_published}
+                onClick={openMultipleRecordsApi}
+              >
+                <ExternalLink className="mr-2 size-4" />
+                Open API
+              </Button>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

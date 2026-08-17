@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Database, Plus, Settings2 } from "lucide-react";
+
 import AppLayout from "@/components/layout/app-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getResource, publishResource, unpublishResource } from "@/service/endpoints/resources";
-// import { getFields } from "@/service/endpoints/fields";
+import { getFields, deleteField } from "@/service/endpoints/fields";
 import ResourceFieldsTable from "@/features/resources/components/ResourceFieldsTable";
 import ResourceRuntime from "@/features/resources/components/ResourceRuntime";
 
@@ -25,7 +26,7 @@ export default function ResourceDetailPage() {
 
   const fieldsQuery = useQuery({
     queryKey: ["fields", projectSlug, resourceSlug],
-    // queryFn: () => getFields(projectSlug, resourceSlug),
+    queryFn: () => getFields(projectSlug, resourceSlug),
     enabled: Boolean(projectSlug && resourceSlug),
     staleTime: 2 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
@@ -50,6 +51,16 @@ export default function ResourceDetailPage() {
     },
   });
 
+  const deleteFieldMutation = useMutation({
+    mutationFn: (fieldSlug) => deleteField(projectSlug, resourceSlug, fieldSlug),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fields", projectSlug, resourceSlug],
+      });
+    },
+  });
+
   const resource = resourceQuery.data;
 
   const fields = Array.isArray(fieldsQuery.data)
@@ -67,8 +78,7 @@ export default function ResourceDetailPage() {
   };
 
   const handleDeleteField = (field) => {
-    // eslint-disable-next-line no-console
-    console.log("Delete field:", field);
+    deleteFieldMutation.mutate(field.slug);
   };
 
   if (resourceQuery.isLoading) {
@@ -116,6 +126,7 @@ export default function ResourceDetailPage() {
   }
 
   const isPublishing = publishMutation.isPending;
+  const isDeletingField = deleteFieldMutation.isPending;
 
   return (
     <AppLayout>
@@ -163,7 +174,7 @@ export default function ResourceDetailPage() {
               </div>
             </div>
 
-            <Button onClick={handleCreateField}>
+            <Button onClick={handleCreateField} disabled={isDeletingField}>
               <Plus className="mr-2 size-4" />
               Create Field
             </Button>
@@ -172,6 +183,12 @@ export default function ResourceDetailPage() {
           {publishMutation.isError && (
             <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               {publishMutation.error?.response?.data?.detail || "Failed to update resource status."}
+            </div>
+          )}
+
+          {deleteFieldMutation.isError && (
+            <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {deleteFieldMutation.error?.response?.data?.detail || "Failed to delete field."}
             </div>
           )}
 

@@ -19,11 +19,9 @@ urlpatterns = [
             [
                 path("status/", server_status, name="server status"),
                 path("users/", include("users.urls"), name="users"),
+                path("dashboard/", include("dashboard.urls"), name="dashboard"),
                 path("projects/", include("projects.urls"), name="projects"),
-                path(
-                    "generators/",
-                    include("generators.urls"),
-                ),
+                path("generators/", include("generators.urls"), name="generators"),
                 path("", include("runtime.urls"), name="runtime"),
             ]
         ),

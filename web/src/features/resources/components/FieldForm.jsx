@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
+import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -16,8 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
-import { getGeneratorByKey, mockGenerators } from "@/features/resources/data/generatorMock";
+import { getGenerators } from "@/service/endpoints/fields";
 
 const fieldSchema = z.object({
   name: z
@@ -38,6 +37,18 @@ const fieldSchema = z.object({
     .min(0, "Display order cannot be negative."),
 });
 
+function normalizeGenerators(data) {
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  if (Array.isArray(data?.results)) {
+    return data.results;
+  }
+
+  return [];
+}
+
 function getOptionDescription(optionKey) {
   const descriptions = {
     minimum: "Smallest value that can be generated.",
@@ -49,9 +60,53 @@ function getOptionDescription(optionKey) {
     end: "Ending point of the generation range.",
     words: "Number of words generated in the sentence.",
     sentences: "Number of sentences generated in the paragraph.",
+    choices: "Values that can be randomly selected.",
   };
 
   return descriptions[optionKey] ?? "";
+}
+
+function getOptionType(option) {
+  if (option.type === "number") {
+    return "number";
+  }
+
+  if (
+    option.key === "minimum" ||
+    option.key === "maximum" ||
+    option.key === "decimal_places" ||
+    option.key === "true_probability" ||
+    option.key === "words" ||
+    option.key === "sentences"
+  ) {
+    return "number";
+  }
+
+  if (option.key === "start" || option.key === "end") {
+    return "date";
+  }
+
+  return "text";
+}
+
+function getOptionDefault(option) {
+  if (option.default !== undefined && option.default !== null) {
+    return option.default;
+  }
+
+  if (option.default_value !== undefined && option.default_value !== null) {
+    return option.default_value;
+  }
+
+  return "";
+}
+
+function normalizeOptionValue(value, type) {
+  if (type === "number") {
+    return value === "" ? "" : Number(value);
+  }
+
+  return value;
 }
 
 export default function FieldForm({
@@ -87,7 +142,26 @@ export default function FieldForm({
 
   const generatorOptions = watch("generator_options") || {};
 
-  const selectedGenerator = useMemo(() => getGeneratorByKey(generatorKey), [generatorKey]);
+  const generatorsQuery = useQuery({
+    queryKey: ["generators"],
+    queryFn: getGenerators,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const generators = useMemo(
+    () => normalizeGenerators(generatorsQuery.data),
+    [generatorsQuery.data],
+  );
+
+  const selectedGenerator = useMemo(
+    () => generators.find((generator) => generator.key === generatorKey) ?? null,
+    [generators, generatorKey],
+  );
+
+  const generatorOptionsConfig = selectedGenerator?.options ?? [];
+
+  const isChoiceGenerator = selectedGenerator?.key === "choice.picker";
 
   useEffect(() => {
     if (!initialData) {
@@ -122,21 +196,17 @@ export default function FieldForm({
   }, [initialData, reset]);
 
   useEffect(() => {
-    if (!selectedGenerator) {
+    if (!selectedGenerator || !isChoiceGenerator) {
       return;
     }
 
-    if (selectedGenerator.key === "choice.picker") {
-      const existingChoices = Array.isArray(generatorOptions.choices)
-        ? generatorOptions.choices
-        : [];
+    const existingChoices = Array.isArray(generatorOptions.choices) ? generatorOptions.choices : [];
 
-      setChoices(existingChoices);
-    }
-  }, [generatorOptions.choices, selectedGenerator]);
+    setChoices(existingChoices);
+  }, [generatorOptions.choices, selectedGenerator, isChoiceGenerator]);
 
   const handleGeneratorChange = (value) => {
-    const generator = getGeneratorByKey(value);
+    const generator = generators.find((item) => item.key === value);
 
     setValue("generator_key", value, {
       shouldDirty: true,
@@ -160,8 +230,8 @@ export default function FieldForm({
 
     const options = {};
 
-    generator.options.forEach((option) => {
-      options[option.key] = option.default ?? "";
+    generator.options?.forEach((option) => {
+      options[option.key] = getOptionDefault(option);
     });
 
     if (generator.key === "choice.picker") {
@@ -176,11 +246,7 @@ export default function FieldForm({
   };
 
   const handleOptionChange = (key, value, type) => {
-    let parsedValue = value;
-
-    if (type === "number") {
-      parsedValue = value === "" ? "" : Number(value);
-    }
+    const parsedValue = normalizeOptionValue(value, type);
 
     setValue(
       "generator_options",
@@ -252,9 +318,7 @@ export default function FieldForm({
   };
 
   const submitForm = (data) => {
-    const generator = getGeneratorByKey(data.generator_key);
-
-    if (!generator) {
+    if (!selectedGenerator) {
       return;
     }
 
@@ -262,7 +326,7 @@ export default function FieldForm({
       ...data.generator_options,
     };
 
-    if (generator.key === "choice.picker") {
+    if (isChoiceGenerator) {
       options.choices = choices.map((choice) => choice.trim()).filter(Boolean);
 
       if (!options.choices.length) {
@@ -279,7 +343,7 @@ export default function FieldForm({
     });
   };
 
-  const isChoiceGenerator = selectedGenerator?.key === "choice.picker";
+  const formDisabled = isSubmitting || generatorsQuery.isLoading;
 
   return (
     <form onSubmit={handleSubmit(submitForm)} className="space-y-6">
@@ -322,15 +386,15 @@ export default function FieldForm({
       <div className="space-y-2">
         <Label>Generator</Label>
 
-        <Select value={generatorKey} disabled={isSubmitting} onValueChange={handleGeneratorChange}>
+        <Select value={generatorKey} disabled={formDisabled} onValueChange={handleGeneratorChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select a generator" />
           </SelectTrigger>
 
           <SelectContent>
-            {mockGenerators.map((generator) => (
+            {generators.map((generator) => (
               <SelectItem key={generator.key} value={generator.key}>
-                {generator.label}
+                {generator.key}
               </SelectItem>
             ))}
           </SelectContent>
@@ -340,17 +404,29 @@ export default function FieldForm({
           <p className="text-sm text-destructive">{errors.generator_key.message}</p>
         )}
 
+        {generatorsQuery.isLoading && (
+          <p className="text-xs text-muted-foreground">Loading generators...</p>
+        )}
+
+        {generatorsQuery.isError && (
+          <p className="text-sm text-destructive">
+            {generatorsQuery.error?.response?.data?.detail || "Failed to load generators."}
+          </p>
+        )}
+
         {selectedGenerator && (
           <div className="rounded-lg border bg-muted/30 px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-medium">{selectedGenerator.label}</p>
+              <p className="text-sm font-medium">{selectedGenerator.key}</p>
 
               <span className="rounded-md border bg-background px-2 py-1 font-mono text-[11px] text-muted-foreground">
-                {selectedGenerator.supported_types.join(", ")}
+                {selectedGenerator.supported_types?.join(", ")}
               </span>
             </div>
 
-            <p className="mt-1 text-xs text-muted-foreground">{selectedGenerator.description}</p>
+            {selectedGenerator.description && (
+              <p className="mt-1 text-xs text-muted-foreground">{selectedGenerator.description}</p>
+            )}
           </div>
         )}
       </div>
@@ -395,7 +471,7 @@ export default function FieldForm({
           ) : (
             <div className="space-y-3">
               {choices.map((choice, index) => (
-                <div key={`${index}-${choice}`} className="flex items-center gap-2">
+                <div key={`choice-${index}`} className="flex items-center gap-2">
                   <Input
                     value={choice}
                     placeholder={`Choice ${index + 1}`}
@@ -419,7 +495,7 @@ export default function FieldForm({
         </div>
       )}
 
-      {selectedGenerator && !isChoiceGenerator && selectedGenerator.options.length > 0 && (
+      {selectedGenerator && !isChoiceGenerator && generatorOptionsConfig.length > 0 && (
         <div className="space-y-4 rounded-lg border p-4">
           <div>
             <h3 className="text-sm font-medium">Generator Options</h3>
@@ -429,32 +505,38 @@ export default function FieldForm({
             </p>
           </div>
 
-          {selectedGenerator.options.map((option) => (
-            <div key={option.key} className="space-y-2">
-              <Label htmlFor={`option-${option.key}`}>{option.label}</Label>
+          {generatorOptionsConfig.map((option) => {
+            const optionType = getOptionType(option);
 
-              <Input
-                id={`option-${option.key}`}
-                type={option.type === "number" ? "number" : "text"}
-                min={option.min}
-                max={option.max}
-                placeholder={option.placeholder}
-                value={generatorOptions[option.key] ?? ""}
-                disabled={isSubmitting}
-                onChange={(event) =>
-                  handleOptionChange(option.key, event.target.value, option.type)
-                }
-              />
+            return (
+              <div key={option.key} className="space-y-2">
+                <Label htmlFor={`option-${option.key}`}>{option.label || option.key}</Label>
 
-              {getOptionDescription(option.key) && (
-                <p className="text-xs text-muted-foreground">{getOptionDescription(option.key)}</p>
-              )}
-            </div>
-          ))}
+                <Input
+                  id={`option-${option.key}`}
+                  type={optionType}
+                  min={option.min ?? undefined}
+                  max={option.max ?? undefined}
+                  placeholder={option.placeholder ?? undefined}
+                  value={generatorOptions[option.key] ?? ""}
+                  disabled={isSubmitting}
+                  onChange={(event) =>
+                    handleOptionChange(option.key, event.target.value, optionType)
+                  }
+                />
+
+                {getOptionDescription(option.key) && (
+                  <p className="text-xs text-muted-foreground">
+                    {getOptionDescription(option.key)}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {selectedGenerator && !isChoiceGenerator && selectedGenerator.options.length === 0 && (
+      {selectedGenerator && !isChoiceGenerator && generatorOptionsConfig.length === 0 && (
         <div className="rounded-lg border bg-muted/30 px-4 py-3">
           <p className="text-sm font-medium">No configuration required</p>
 
@@ -463,26 +545,6 @@ export default function FieldForm({
           </p>
         </div>
       )}
-
-      <div className="space-y-2">
-        <Label htmlFor="display_order">Display Order</Label>
-
-        <Input
-          id="display_order"
-          type="number"
-          min="0"
-          disabled={isSubmitting}
-          {...register("display_order")}
-        />
-
-        {errors.display_order && (
-          <p className="text-sm text-destructive">{errors.display_order.message}</p>
-        )}
-
-        <p className="text-xs text-muted-foreground">
-          Controls the order of fields in the generated response.
-        </p>
-      </div>
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button
@@ -498,8 +560,11 @@ export default function FieldForm({
           type="submit"
           disabled={
             isSubmitting ||
+            generatorsQuery.isLoading ||
+            generatorsQuery.isError ||
             (isEdit && !isDirty) ||
             !generatorKey ||
+            !selectedGenerator ||
             (isChoiceGenerator && !choices.some((choice) => choice.trim()))
           }
         >

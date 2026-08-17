@@ -14,6 +14,7 @@ import {
   BookMarkedIcon,
   ShieldCheckIcon,
   FileTextIcon,
+  LucideLayoutDashboard,
 } from "lucide-react";
 
 import useAuthStore from "@/service/store/authStore";
@@ -23,6 +24,11 @@ import ApiLogo from "@/assets/Api.png";
 
 const data = {
   navMain: [
+    {
+      title: "DashBoard",
+      url: "/dashboard",
+      icon: <LucideLayoutDashboard />,
+    },
     {
       title: "Projects",
       url: "/project",

@@ -36,9 +36,7 @@ if ENV_FILE.exists():
     environ.Env.read_env(ENV_FILE)
 
 
-SECRET_KEY = env(
-    "SECRET_KEY", default="g%dl*iu9$l=6%6x)%p8!ku0lfjasci!fux-4k%i*u!*5#zk%44"
-)
+SECRET_KEY = env("SECRET_KEY", default="g%dl*iu9$l=6%6x)%p8!ku0lfjasci!fux-4k%i*u!*5#zk%44")
 
 DEBUG = env.bool(
     "DEBUG",
@@ -70,6 +68,7 @@ INSTALLED_APPS = [
     "projects",
     "resources",
     "runtime",
+    "dashboard",
 ]
 
 
@@ -128,10 +127,7 @@ if ENVIRONMENT == "production":
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation." "UserAttributeSimilarityValidator"),
     },
     {
         "NAME": ("django.contrib.auth.password_validation." "MinimumLengthValidator"),
@@ -179,9 +175,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",

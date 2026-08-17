@@ -46,18 +46,50 @@ def list_generators() -> list[str]:
     return sorted(_REGISTRY.keys())
 
 
+def _serialize_option(generator, option_key: str) -> dict:
+    """
+    Return safe frontend metadata for a generator option.
+
+    The generator implementation remains private. Only metadata
+    required for building the field configuration UI is exposed.
+    """
+    option_metadata = getattr(
+        generator,
+        "option_metadata",
+        {},
+    )
+
+    metadata = option_metadata.get(option_key, {})
+
+    return {
+        "key": option_key,
+        "type": metadata.get("type", "text"),
+        "label": metadata.get(
+            "label",
+            option_key.replace("_", " ").replace("-", " ").title(),
+        ),
+        "default": metadata.get("default"),
+        "min": metadata.get("min"),
+        "max": metadata.get("max"),
+        "placeholder": metadata.get("placeholder"),
+    }
+
+
 def get_generator_metadata() -> list[dict]:
     """
     Return safe metadata describing all registered generators.
 
-    This metadata can be exposed to the frontend without exposing
-    Python implementation details.
+    This metadata is intended for the frontend field configuration
+    interface and never exposes generator implementation details.
     """
     return [
         {
             "key": generator.key,
             "supported_types": list(generator.supported_types),
-            "options": sorted(generator.allowed_options),
+            "options": [
+                _serialize_option(generator, option_key)
+                for option_key in sorted(generator.allowed_options)
+            ],
         }
         for generator in sorted(
             _REGISTRY.values(),

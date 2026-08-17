@@ -55,52 +55,67 @@ const columns = [
     enableSorting: false,
   },
   {
-    accessorKey: "updated_at",
-    header: "Updated At",
-    cell: ({ row }) => format(new Date(row.original.updated_at), "MMM dd, yyyy HH:mm"),
+    accessorKey: "created_at",
+    header: "Created At",
+    cell: ({ row }) => {
+      if (!row.original.created_at) {
+        return "—";
+      }
+
+      return format(new Date(row.original.created_at), "MMM dd, yyyy HH:mm");
+    },
     enableSorting: false,
   },
   {
     id: "actions",
     header: "",
-    cell: ({ row }) => (
-      <div onClick={(event) => event.stopPropagation()}>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={(event) => event.stopPropagation()}>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+    cell: ({ row, table }) => {
+      const onDelete = table.options.meta?.onDelete;
+      const isDeleting = table.options.meta?.isDeleting;
 
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => row.original.onDelete?.(row.original)}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
+      return (
+        <div onClick={(event) => event.stopPropagation()}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={isDeleting}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                disabled={isDeleting}
+                onClick={() => onDelete?.(row.original)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
     enableSorting: false,
   },
 ];
 
-export default function ProjectTable({ data, onRowClick, onDelete, pageSize = 8 }) {
+export default function ProjectTable({
+  data,
+  onRowClick,
+  onDelete,
+  pageSize = 8,
+  isDeleting = false,
+}) {
   const [columnVisibility, setColumnVisibility] = useState({
     slug: false,
   });
 
-  const tableData = useMemo(
-    () =>
-      data.map((item) => ({
-        ...item,
-
-        onDelete,
-      })),
-    [data, onDelete],
-  );
+  const tableData = useMemo(() => data, [data]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = ReactTable.useReactTable({
@@ -108,6 +123,10 @@ export default function ProjectTable({ data, onRowClick, onDelete, pageSize = 8 
     columns,
     state: {
       columnVisibility,
+    },
+    meta: {
+      onDelete,
+      isDeleting,
     },
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: ReactTable.getCoreRowModel(),

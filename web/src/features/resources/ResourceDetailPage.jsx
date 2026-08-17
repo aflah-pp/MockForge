@@ -1,24 +1,93 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Database, Plus } from "lucide-react";
-
+import { ArrowLeft, Database, Plus, Settings2 } from "lucide-react";
 import AppLayout from "@/components/layout/app-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { getResource, publishResource, unpublishResource } from "@/service/endpoints/resources";
+// import { getFields } from "@/service/endpoints/fields";
 import ResourceFieldsTable from "@/features/resources/components/ResourceFieldsTable";
 import ResourceRuntime from "@/features/resources/components/ResourceRuntime";
-import { mockResources } from "@/features/resources/data/resourceMock";
 
 export default function ResourceDetailPage() {
   const { projectSlug, resourceSlug } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const resource = mockResources.find(
-    (item) => item.project_slug === projectSlug && item.slug === resourceSlug,
-  );
+  const resourceQuery = useQuery({
+    queryKey: ["resources", projectSlug, resourceSlug],
+    queryFn: () => getResource(projectSlug, resourceSlug),
+    enabled: Boolean(projectSlug && resourceSlug),
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
 
-  if (!resource) {
+  const fieldsQuery = useQuery({
+    queryKey: ["fields", projectSlug, resourceSlug],
+    // queryFn: () => getFields(projectSlug, resourceSlug),
+    enabled: Boolean(projectSlug && resourceSlug),
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+  const publishMutation = useMutation({
+    mutationFn: () =>
+      resourceQuery.data?.is_published
+        ? unpublishResource(projectSlug, resourceSlug)
+        : publishResource(projectSlug, resourceSlug),
+
+    onSuccess: (data) => {
+      queryClient.setQueryData(["resources", projectSlug, resourceSlug], data);
+
+      queryClient.invalidateQueries({
+        queryKey: ["resources", projectSlug],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects", projectSlug],
+      });
+    },
+  });
+
+  const resource = resourceQuery.data;
+
+  const fields = Array.isArray(fieldsQuery.data)
+    ? fieldsQuery.data
+    : Array.isArray(fieldsQuery.data?.results)
+      ? fieldsQuery.data.results
+      : [];
+
+  const handleCreateField = () => {
+    navigate(`/project/${projectSlug}/resources/${resourceSlug}/fields/create`);
+  };
+
+  const handleEditField = (field) => {
+    navigate(`/project/${projectSlug}/resources/${resourceSlug}/fields/${field.slug}/edit`);
+  };
+
+  const handleDeleteField = (field) => {
+    // eslint-disable-next-line no-console
+    console.log("Delete field:", field);
+  };
+
+  if (resourceQuery.isLoading) {
+    return (
+      <AppLayout>
+        <main className="h-[calc(100vh-6rem)] overflow-auto">
+          <div className="mx-auto flex min-h-full w-full max-w-5xl items-center justify-center px-4">
+            <div className="text-center">
+              <p className="font-medium">Loading resource...</p>
+
+              <p className="mt-1 text-sm text-muted-foreground">Fetching resource details.</p>
+            </div>
+          </div>
+        </main>
+      </AppLayout>
+    );
+  }
+
+  if (resourceQuery.isError || !resource) {
     return (
       <AppLayout>
         <main className="h-[calc(100vh-6rem)] overflow-auto">
@@ -34,7 +103,10 @@ export default function ResourceDetailPage() {
               <CardHeader>
                 <CardTitle>Resource not found</CardTitle>
 
-                <CardDescription>The requested resource does not exist.</CardDescription>
+                <CardDescription>
+                  {resourceQuery.error?.response?.data?.detail ||
+                    "The requested resource does not exist or you do not have access to it."}
+                </CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -43,29 +115,28 @@ export default function ResourceDetailPage() {
     );
   }
 
-  const handleCreateField = () => {
-    navigate(`/project/${projectSlug}/resources/${resource.slug}/fields/create`);
-  };
-
-  const handleEditField = (field) => {
-    navigate(`/project/${projectSlug}/resources/${resource.slug}/fields/${field.slug}/edit`);
-  };
-
-  const handleDeleteField = (field) => {
-    // eslint-disable-next-line no-console
-    console.log("Delete field:", field);
-  };
+  const isPublishing = publishMutation.isPending;
 
   return (
     <AppLayout>
       <main className="h-[calc(100vh-6rem)] overflow-auto">
         <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between gap-3">
             <Button variant="outline" size="sm" asChild>
               <Link to={`/project/${projectSlug}`} className="inline-flex items-center gap-2">
                 <ArrowLeft className="size-4" />
                 <span>Back to Project</span>
               </Link>
+            </Button>
+
+            <Button
+              variant={resource.is_published ? "outline" : "default"}
+              disabled={isPublishing}
+              onClick={() => publishMutation.mutate()}
+            >
+              <Settings2 className="mr-2 size-4" />
+
+              {isPublishing ? "Updating..." : resource.is_published ? "Unpublish" : "Publish"}
             </Button>
           </div>
 
@@ -98,6 +169,12 @@ export default function ResourceDetailPage() {
             </Button>
           </div>
 
+          {publishMutation.isError && (
+            <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {publishMutation.error?.response?.data?.detail || "Failed to update resource status."}
+            </div>
+          )}
+
           <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
             <Card>
               <CardHeader>
@@ -107,11 +184,36 @@ export default function ResourceDetailPage() {
               </CardHeader>
 
               <CardContent className="p-0">
-                <ResourceFieldsTable
-                  fields={resource.fields}
-                  onEdit={handleEditField}
-                  onDelete={handleDeleteField}
-                />
+                {fieldsQuery.isLoading ? (
+                  <div className="flex min-h-48 items-center justify-center">
+                    <div className="text-center">
+                      <p className="font-medium">Loading fields...</p>
+
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Fetching resource fields.
+                      </p>
+                    </div>
+                  </div>
+                ) : fieldsQuery.isError ? (
+                  <div className="flex min-h-48 flex-col items-center justify-center gap-2 px-6 text-center">
+                    <p className="font-medium">Failed to load fields</p>
+
+                    <p className="text-sm text-muted-foreground">
+                      {fieldsQuery.error?.response?.data?.detail ||
+                        "Something went wrong while fetching fields."}
+                    </p>
+
+                    <Button size="sm" variant="outline" onClick={() => fieldsQuery.refetch()}>
+                      Try Again
+                    </Button>
+                  </div>
+                ) : (
+                  <ResourceFieldsTable
+                    fields={fields}
+                    onEdit={handleEditField}
+                    onDelete={handleDeleteField}
+                  />
+                )}
               </CardContent>
             </Card>
 

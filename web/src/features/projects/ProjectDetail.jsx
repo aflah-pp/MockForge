@@ -1,16 +1,19 @@
-import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Database, Plus, Settings2 } from "lucide-react";
-
 import AppLayout from "@/components/layout/app-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-import { mockProject } from "@/features/projects/data/mockProjects";
+import { getProject, publishProject, unpublishProject } from "@/service/endpoints/projects";
+import { getResources } from "@/service/endpoints/resources";
 import ProjectResourcesTable from "@/features/projects/components/ProjectResourceTable";
 
 function formatDate(date) {
+  if (!date) {
+    return "—";
+  }
+
   return new Date(date).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -19,6 +22,10 @@ function formatDate(date) {
 }
 
 function formatDateTime(date) {
+  if (!date) {
+    return "—";
+  }
+
   return new Date(date).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -31,16 +38,99 @@ function formatDateTime(date) {
 export default function ProjectDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const project = useMemo(() => {
-    return mockProject.slug === slug ? mockProject : mockProject;
-  }, [slug]);
+  const {
+    data: project,
+    isLoading: isProjectLoading,
+    isError: isProjectError,
+    error: projectError,
+  } = useQuery({
+    queryKey: ["projects", slug],
+    queryFn: () => getProject(slug),
+    enabled: Boolean(slug),
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
 
-  const publishedResources = project.resources.filter((resource) => resource.is_published).length;
+  const {
+    data: resources = [],
+    isLoading: isResourcesLoading,
+    isError: isResourcesError,
+  } = useQuery({
+    queryKey: ["projects", slug, "resources"],
+    queryFn: () => getResources(slug),
+    enabled: Boolean(slug),
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+  const publishMutation = useMutation({
+    mutationFn: () =>
+      project?.is_published ? unpublishProject(project.slug) : publishProject(project.slug),
+
+    onSuccess: (updatedProject) => {
+      queryClient.setQueryData(["projects", slug], updatedProject);
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+    },
+  });
 
   const handleCreateResource = () => {
+    if (!project) {
+      return;
+    }
+
     navigate(`/project/${project.slug}/resources/create`);
   };
+
+  if (isProjectLoading) {
+    return (
+      <AppLayout>
+        <main className="h-[calc(100vh-5rem)] w-full overflow-hidden">
+          <div className="mx-auto flex h-full w-full max-w-[1600px] items-center justify-center px-4">
+            <div className="text-center">
+              <p className="font-medium">Loading project...</p>
+
+              <p className="mt-1 text-sm text-muted-foreground">Fetching project details.</p>
+            </div>
+          </div>
+        </main>
+      </AppLayout>
+    );
+  }
+
+  if (isProjectError || !project) {
+    return (
+      <AppLayout>
+        <main className="h-[calc(100vh-5rem)] w-full overflow-hidden">
+          <div className="mx-auto flex h-full w-full max-w-[1600px] items-center justify-center px-4">
+            <div className="text-center">
+              <p className="font-medium">Project not found</p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {projectError?.response?.data?.detail ||
+                  "The project may have been deleted or you do not have access to it."}
+              </p>
+
+              <Button className="mt-4" variant="outline" onClick={() => navigate("/project")}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Projects
+              </Button>
+            </div>
+          </div>
+        </main>
+      </AppLayout>
+    );
+  }
+
+  const safeResources = Array.isArray(resources) ? resources : [];
+
+  const publishedResources = safeResources.filter((resource) => resource?.is_published).length;
+
+  const isPublishing = publishMutation.isPending;
 
   return (
     <AppLayout>
@@ -50,7 +140,7 @@ export default function ProjectDetailPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex min-w-0 items-start gap-3">
                 <Button variant="outline" size="icon" asChild className="mt-0.5 shrink-0">
-                  <Link to="/project">
+                  <Link to="/project" aria-label="Back to projects">
                     <ArrowLeft className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -58,7 +148,7 @@ export default function ProjectDetailPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h1 className="truncate text-2xl font-bold tracking-tight sm:text-3xl">
-                      {project.name}
+                      {project.name || "Unnamed Project"}
                     </h1>
 
                     <Badge variant={project.is_published ? "default" : "secondary"}>
@@ -74,12 +164,14 @@ export default function ProjectDetailPage() {
 
               <div className="flex w-full gap-2 sm:w-auto">
                 <Button
-                  variant="outline"
+                  variant={project.is_published ? "outline" : "default"}
                   className="flex-1 sm:flex-none"
-                  onClick={() => alert("Published")}
+                  disabled={isPublishing}
+                  onClick={() => publishMutation.mutate()}
                 >
                   <Settings2 className="mr-2 h-4 w-4" />
-                  Publish
+
+                  {isPublishing ? "Updating..." : project.is_published ? "Unpublish" : "Publish"}
                 </Button>
 
                 <Button className="flex-1 sm:flex-none" onClick={handleCreateResource}>
@@ -114,7 +206,9 @@ export default function ProjectDetailPage() {
                     <div className="flex items-center gap-2">
                       <Database className="h-4 w-4 text-muted-foreground" />
 
-                      <span className="text-2xl font-bold">{project.resources.length}</span>
+                      <span className="text-2xl font-bold">
+                        {isResourcesLoading ? "—" : safeResources.length}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -125,7 +219,9 @@ export default function ProjectDetailPage() {
                   </CardHeader>
 
                   <CardContent>
-                    <span className="text-2xl font-bold">{publishedResources}</span>
+                    <span className="text-2xl font-bold">
+                      {isResourcesLoading ? "—" : publishedResources}
+                    </span>
                   </CardContent>
                 </Card>
 
@@ -156,13 +252,13 @@ export default function ProjectDetailPage() {
                     <div>
                       <p className="text-xs font-medium text-muted-foreground">Name</p>
 
-                      <p className="mt-1 font-medium">{project.name}</p>
+                      <p className="mt-1 font-medium">{project.name || "—"}</p>
                     </div>
 
                     <div>
                       <p className="text-xs font-medium text-muted-foreground">Slug</p>
 
-                      <p className="mt-1 font-mono text-sm">{project.slug}</p>
+                      <p className="mt-1 font-mono text-sm">{project.slug || "—"}</p>
                     </div>
 
                     <div>
@@ -180,7 +276,19 @@ export default function ProjectDetailPage() {
                 </CardContent>
               </Card>
 
-              <ProjectResourcesTable project={project} />
+              {isResourcesError ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="font-medium">Unable to load resources</p>
+
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Please try refreshing the page.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <ProjectResourcesTable project={project} resources={safeResources} />
+              )}
             </div>
           </div>
         </div>

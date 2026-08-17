@@ -23,9 +23,7 @@ export default function ResourceFieldsTable({ fields = [], onEdit, onDelete }) {
     return (
       <div className="flex min-h-48 flex-col items-center justify-center gap-2 px-6 text-center">
         <Database className="size-8 text-muted-foreground" />
-
         <p className="font-medium">No fields yet</p>
-
         <p className="text-sm text-muted-foreground">
           Create a field to define the generated response.
         </p>
@@ -33,7 +31,7 @@ export default function ResourceFieldsTable({ fields = [], onEdit, onDelete }) {
     );
   }
 
-  const sortedFields = [...fields].sort((a, b) => a.display_order - b.display_order);
+  const sortedFields = [...fields].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
 
   return (
     <div className="overflow-x-auto">
@@ -50,26 +48,25 @@ export default function ResourceFieldsTable({ fields = [], onEdit, onDelete }) {
 
         <TableBody>
           {sortedFields.map((field) => (
-            <TableRow key={field.uuid}>
+            <TableRow key={field.uuid || field.id || field.slug}>
               <TableCell>
                 <div className="min-w-32">
                   <p className="font-medium">{field.name}</p>
-
                   <p className="font-mono text-xs text-muted-foreground">{field.slug}</p>
                 </div>
               </TableCell>
 
               <TableCell>
-                <Badge variant="secondary">{field.data_type}</Badge>
+                <Badge variant="secondary">{field.data_type || "—"}</Badge>
               </TableCell>
 
               <TableCell>
                 <span className="font-mono text-xs text-muted-foreground">
-                  {field.generator_key}
+                  {field.generator_key || "—"}
                 </span>
               </TableCell>
 
-              <TableCell className="text-right">{field.display_order}</TableCell>
+              <TableCell className="text-right">{field.display_order ?? "—"}</TableCell>
 
               <TableCell>
                 <DropdownMenu>
@@ -88,7 +85,10 @@ export default function ResourceFieldsTable({ fields = [], onEdit, onDelete }) {
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem variant="destructive" onClick={() => onDelete?.(field)}>
+                    <DropdownMenuItem
+                      className="text-destructive" // ✅ fixed
+                      onClick={() => onDelete?.(field)}
+                    >
                       <Trash2 className="mr-2 size-4" />
                       Delete
                     </DropdownMenuItem>

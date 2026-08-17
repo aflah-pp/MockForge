@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 
@@ -15,22 +16,84 @@ import {
 
 import ProjectTable from "@/features/dashboard/components/ProjectsTable";
 import AppLayout from "@/components/layout/app-layout";
-import { mockProjects } from "@/features/dashboard/data/initialData";
+import { deleteProject, getProjects } from "@/service/endpoints/projects";
 
 const ITEMS_PER_PAGE = 5;
 
 export default function ProjectsList() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [projects, setProjects] = useState(mockProjects);
   const [searchTerm, setSearchTerm] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleDelete = (project) => {
-    if (window.confirm(`Are you sure you want to delete "${project.name}"?`)) {
-      setProjects((prev) => prev.filter((item) => item.uuid !== project.uuid));
+  const {
+    data: projectsResponse,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const projects = useMemo(() => {
+    if (Array.isArray(projectsResponse)) {
+      return projectsResponse;
     }
+
+    if (Array.isArray(projectsResponse?.results)) {
+      return projectsResponse.results;
+    }
+
+    if (Array.isArray(projectsResponse?.data)) {
+      return projectsResponse.data;
+    }
+
+    return [];
+  }, [projectsResponse]);
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteProject,
+
+    onSuccess: (_, slug) => {
+      queryClient.setQueryData(["projects"], (currentData) => {
+        if (Array.isArray(currentData)) {
+          return currentData.filter((project) => project.slug !== slug);
+        }
+
+        if (currentData?.results) {
+          return {
+            ...currentData,
+            results: currentData.results.filter((project) => project.slug !== slug),
+          };
+        }
+
+        return currentData;
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+    },
+  });
+
+  const handleDelete = (project) => {
+    if (!project?.slug) {
+      return;
+    }
+
+    const confirmed = window.confirm(`Are you sure you want to delete "${project.name}"?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    deleteMutation.mutate(project.slug);
   };
 
   const handleRowClick = (project) => {
@@ -47,8 +110,8 @@ export default function ProjectsList() {
     return projects.filter((project) => {
       const matchesSearch =
         !search ||
-        project.name.toLowerCase().includes(search) ||
-        project.slug.toLowerCase().includes(search);
+        project.name?.toLowerCase().includes(search) ||
+        project.slug?.toLowerCase().includes(search);
 
       const matchesPublished =
         publishedFilter === "all" ||
@@ -133,18 +196,9 @@ export default function ProjectsList() {
 
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {[
-                    {
-                      value: "all",
-                      label: "All",
-                    },
-                    {
-                      value: "published",
-                      label: "Published",
-                    },
-                    {
-                      value: "draft",
-                      label: "Drafts",
-                    },
+                    { value: "all", label: "All" },
+                    { value: "published", label: "Published" },
+                    { value: "draft", label: "Drafts" },
                   ].map((filter) => (
                     <Button
                       key={filter.value}
@@ -163,155 +217,180 @@ export default function ProjectsList() {
           </div>
 
           <div className="mt-4 min-h-0 flex-1 overflow-hidden">
-            <div className="hidden h-full min-h-0 overflow-auto md:block">
-              <ProjectTable
-                data={paginatedProjects}
-                onRowClick={handleRowClick}
-                onDelete={handleDelete}
-                pageSize={ITEMS_PER_PAGE}
-              />
-            </div>
+            {isLoading ? (
+              <div className="flex h-full items-center justify-center rounded-xl border bg-card">
+                <p className="text-sm text-muted-foreground">Loading projects...</p>
+              </div>
+            ) : isError ? (
+              <div className="flex h-full flex-col items-center justify-center rounded-xl border border-destructive/30 bg-card px-6 text-center">
+                <p className="font-medium text-destructive">Failed to load projects</p>
 
-            <div className="h-full min-h-0 overflow-y-auto md:hidden">
-              {paginatedProjects.length > 0 ? (
-                <div className="space-y-4 pb-4">
-                  {paginatedProjects.map((project) => (
-                    <div
-                      key={project.uuid}
-                      className="rounded-xl border bg-card p-4 shadow-sm transition-colors active:bg-muted/40"
-                      onClick={() => handleRowClick(project)}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <h2 className="truncate font-semibold">{project.name}</h2>
-
-                          <p className="mt-1 truncate text-sm text-muted-foreground">
-                            /{project.slug}
-                          </p>
-                        </div>
-
-                        <span
-                          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
-                            project.is_published
-                              ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
-                              : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {project.is_published ? "Published" : "Draft"}
-                        </span>
-                      </div>
-
-                      <div className="mt-4 border-t pt-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <p className="text-xs text-muted-foreground">Last updated</p>
-
-                            <p className="mt-0.5 text-sm">
-                              {new Date(project.updated_at).toLocaleDateString("en-IN", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                            </p>
-                          </div>
-
-                          <div className="flex gap-2" onClick={(event) => event.stopPropagation()}>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDelete(project)}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-dashed bg-card px-6 py-12 text-center">
-                  <p className="font-medium">No projects found</p>
-
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Try changing your search or filter.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-4 shrink-0">
-            {filteredProjects.length > 0 ? (
-              <div className="flex min-h-16 flex-col items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 shadow-sm sm:flex-row">
-                <p className="text-center text-sm text-muted-foreground sm:text-left">
-                  Showing <span className="font-medium text-foreground">{startItem}</span> to{" "}
-                  <span className="font-medium text-foreground">{endItem}</span> of{" "}
-                  <span className="font-medium text-foreground">{filteredProjects.length}</span>{" "}
-                  projects
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {error?.message || "Something went wrong."}
                 </p>
-
-                {totalPages > 1 && (
-                  <Pagination className="mx-0 w-auto">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          href="#"
-                          onClick={(event) => {
-                            event.preventDefault();
-
-                            if (currentPage > 1) {
-                              setCurrentPage((page) => page - 1);
-                            }
-                          }}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-
-                      {pageNumbers.map((page, index) =>
-                        page === "ellipsis" ? (
-                          <PaginationItem key={`ellipsis-${index}`}>
-                            <PaginationEllipsis />
-                          </PaginationItem>
-                        ) : (
-                          <PaginationItem key={page}>
-                            <PaginationLink
-                              href="#"
-                              isActive={currentPage === page}
-                              onClick={(event) => {
-                                event.preventDefault();
-                                setCurrentPage(page);
-                              }}
-                            >
-                              {page}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ),
-                      )}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          href="#"
-                          onClick={(event) => {
-                            event.preventDefault();
-
-                            if (currentPage < totalPages) {
-                              setCurrentPage((page) => page + 1);
-                            }
-                          }}
-                          className={
-                            currentPage === totalPages ? "pointer-events-none opacity-50" : ""
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                )}
               </div>
             ) : (
-              <div className="h-16" />
+              <>
+                <div className="hidden h-full min-h-0 overflow-auto md:block">
+                  <ProjectTable
+                    data={paginatedProjects}
+                    onRowClick={handleRowClick}
+                    onDelete={handleDelete}
+                    pageSize={ITEMS_PER_PAGE}
+                    isDeleting={deleteMutation.isPending}
+                  />
+                </div>
+
+                <div className="h-full min-h-0 overflow-y-auto md:hidden">
+                  {paginatedProjects.length > 0 ? (
+                    <div className="space-y-4 pb-4">
+                      {paginatedProjects.map((project) => (
+                        <div
+                          key={project.uuid}
+                          className="rounded-xl border bg-card p-4 shadow-sm transition-colors active:bg-muted/40"
+                          onClick={() => handleRowClick(project)}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                              <h2 className="truncate font-semibold">{project.name}</h2>
+
+                              <p className="mt-1 truncate text-sm text-muted-foreground">
+                                /{project.slug}
+                              </p>
+                            </div>
+
+                            <span
+                              className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
+                                project.is_published
+                                  ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
+                                  : "bg-muted text-muted-foreground"
+                              }`}
+                            >
+                              {project.is_published ? "Published" : "Draft"}
+                            </span>
+                          </div>
+
+                          <div className="mt-4 border-t pt-3">
+                            <div className="flex items-center justify-between gap-3">
+                              <div>
+                                <p className="text-xs text-muted-foreground">Last updated</p>
+
+                                <p className="mt-0.5 text-sm">
+                                  {project.updated_at
+                                    ? new Date(project.updated_at).toLocaleDateString("en-IN", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                      })
+                                    : "—"}
+                                </p>
+                              </div>
+
+                              <div
+                                className="flex gap-2"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  disabled={deleteMutation.isPending}
+                                  onClick={() => handleDelete(project)}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border border-dashed bg-card px-6 py-12 text-center">
+                      <p className="font-medium">No projects found</p>
+
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Try changing your search or filter.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
+
+          {!isLoading &&
+            !isError &&
+            (filteredProjects.length > 0 ? (
+              <div className="mt-4 shrink-0">
+                <div className="flex min-h-16 flex-col items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 shadow-sm sm:flex-row">
+                  <p className="text-center text-sm text-muted-foreground sm:text-left">
+                    Showing <span className="font-medium text-foreground">{startItem}</span> to{" "}
+                    <span className="font-medium text-foreground">{endItem}</span> of{" "}
+                    <span className="font-medium text-foreground">{filteredProjects.length}</span>{" "}
+                    projects
+                  </p>
+
+                  {totalPages > 1 && (
+                    <Pagination className="mx-0 w-auto">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            href="#"
+                            onClick={(event) => {
+                              event.preventDefault();
+
+                              if (currentPage > 1) {
+                                setCurrentPage((page) => page - 1);
+                              }
+                            }}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+
+                        {pageNumbers.map((page, index) =>
+                          page === "ellipsis" ? (
+                            <PaginationItem key={`ellipsis-${index}`}>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          ) : (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                href="#"
+                                isActive={currentPage === page}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  setCurrentPage(page);
+                                }}
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ),
+                        )}
+
+                        <PaginationItem>
+                          <PaginationNext
+                            href="#"
+                            onClick={(event) => {
+                              event.preventDefault();
+
+                              if (currentPage < totalPages) {
+                                setCurrentPage((page) => page + 1);
+                              }
+                            }}
+                            className={
+                              currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+                            }
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 h-16" />
+            ))}
         </div>
       </main>
     </AppLayout>

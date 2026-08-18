@@ -1,8 +1,10 @@
 # MockForge Web
 
-The frontend application for MockForge.
+Frontend application for the MockForge dashboard and documentation.
 
-MockForge Web is a React-based dashboard and documentation interface used to create projects, resources, fields, configure data generators, and interact with generated mock APIs.
+This is a React + Vite app that lets you create projects, resources, and fields, configure data generators, and work with generated mock API endpoints. It does not re‑document every feature; see the root [README](../README.md) for the full product overview.
+
+---
 
 ## Tech Stack
 
@@ -17,20 +19,22 @@ MockForge Web is a React-based dashboard and documentation interface used to cre
 - Zod
 - Lucide React
 
-## Requirements
+---
 
-Before running the frontend, make sure you have:
+## Requirements
 
 - Node.js 20+
 - npm 10+
 - MockForge backend running locally
 
-Check your versions:
+Check versions:
 
 ```bash
 node --version
 npm --version
 ```
+
+---
 
 ## Project Structure
 
@@ -61,185 +65,72 @@ web/
 └── vite.config.js
 ```
 
-The frontend is organized primarily around features rather than placing all application logic into one large component structure.
+The app is organized around features instead of one giant component tree.
+
+---
 
 ## Installation
 
-From the MockForge root directory:
+From the repository root:
 
 ```bash
 cd web
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
+---
+
 ## Environment Configuration
 
-Create the appropriate local environment file used by the frontend configuration.
+Create a local environment file (for example `.env` or `.env.local`, depending on your setup) and configure the backend API URL:
 
-The frontend needs the URL of the MockForge backend API.
-
-For example:
-
-```text
+```env
 VITE_API_BASE_URL=http://127.0.0.1:8000/api/v1
 ```
 
-Do not commit local environment files containing private configuration.
+Do not commit environment files with private configuration.
+
+---
 
 ## Development
 
-Start the Vite development server:
+Start the Vite dev server:
 
 ```bash
 npm run dev
 ```
 
-Vite will display the local development URL in the terminal.
-
-Usually:
+Vite will show a local URL, typically:
 
 ```text
 http://localhost:5173
 ```
 
-Open the displayed URL in your browser.
+Open that in your browser. The frontend talks to the Django REST API via Axios, so make sure the backend is running before testing authenticated flows or API calls.
 
-## Backend Connection
-
-The frontend communicates with the Django REST API.
-
-The local development flow is:
-
-```text
-Browser
-   ↓
-React + Vite
-   ↓
-Axios
-   ↓
-Django REST API
-   ↓
-PostgreSQL
-```
-
-Make sure the backend is running before testing authenticated features or API requests.
+---
 
 ## Main Application Areas
 
-### Authentication
+- **Authentication**  
+  Registration, login, token refresh, logout, account & password management. Auth state is managed in the app’s auth store.
 
-The frontend provides:
+- **Dashboard**  
+  Shows real data from the backend: project counts, published projects, resource info, recent activity, etc.
 
-- Registration
-- Login
-- Token refresh
-- Logout
-- Account management
-- Password management
+- **Projects**  
+  Create, view, update, publish, unpublish, and delete projects (top‑level containers for mock APIs).
 
-Authentication state is managed through the application's auth store.
+- **Resources**  
+  Define API entities like `Product`, `User`, `Order`, `Company` inside a project.
 
-### Dashboard
+- **Fields**  
+  Configure field name, type, generator, and generator options for each resource.
 
-The dashboard provides real application data such as:
+- **Documentation**  
+  The app also hosts the MockForge docs (Introduction, Quick Start, Projects & Resources, Fields, Generators, API usage, API reference, Roadmap).
 
-- Project counts
-- Published projects
-- Resource information
-- Recent activity
-
-Dashboard information is retrieved from the backend rather than being permanently represented by frontend mock data.
-
-### Projects
-
-Projects are the top-level containers for mock APIs.
-
-The frontend allows users to:
-
-- Create projects
-- View projects
-- Update projects
-- Publish projects
-- Unpublish projects
-- Delete projects
-
-### Resources
-
-Resources represent API entities such as:
-
-```text
-Product
-User
-Order
-Company
-```
-
-A project can contain multiple resources.
-
-### Fields
-
-Fields define the structure of a resource.
-
-For example:
-
-```text
-Product
-├── name
-├── price
-├── stock
-└── image
-```
-
-The field interface allows users to configure:
-
-- Field name
-- Field type
-- Generator
-- Generator options
-
-### Data Generators
-
-MockForge provides configurable generators for producing realistic values.
-
-Examples include:
-
-```text
-person.full_name
-internet.email
-commerce.price
-random.integer
-random.boolean
-uuid.v4
-```
-
-The frontend retrieves generator information from the backend and presents compatible generators for each field type.
-
-### Mock API
-
-After configuring a resource, users can publish it and use the generated HTTP endpoint.
-
-The frontend provides the generated endpoint so it can be copied and used in applications, Postman, Axios, Fetch, or other HTTP clients.
-
-### Documentation
-
-The project also contains the MockForge documentation interface.
-
-Documentation covers:
-
-- Introduction
-- Installation
-- Quick Start
-- Projects and Resources
-- Fields
-- Data Generators
-- Connecting MockForge APIs
-- API Reference
-- Roadmap
+---
 
 ## Production Build
 
@@ -249,21 +140,21 @@ Create a production build:
 npm run build
 ```
 
-The generated production files are placed in:
+Output goes to:
 
 ```text
 dist/
 ```
 
-## Preview Production Build
-
-To locally preview the production build:
+Preview the production build locally:
 
 ```bash
 npm run preview
 ```
 
-Vite will provide a local preview URL.
+Vite will show a local preview URL.
+
+---
 
 ## Linting
 
@@ -273,91 +164,72 @@ Run ESLint:
 npm run lint
 ```
 
-The project should pass linting before changes are merged.
+The project should pass linting before merging changes.
 
-## Testing
+---
 
-Frontend testing is part of the project's quality process.
+## Testing & Manual Checks
 
-Before committing frontend changes, verify:
+Frontend testing is currently manual + CI‑assisted. Before committing frontend changes, verify:
 
-- Application builds successfully
+- App builds successfully
 - ESLint passes
-- Authentication flows work
+- Authentication flows work (login, logout, refresh)
 - Dashboard data loads correctly
 - Project CRUD works
 - Resource CRUD works
-- Field creation works
-- Generator selection works
-- Generated mock API can be opened
+- Field creation and generator selection work
+- Generated mock API endpoint can be opened and returns JSON
 - Documentation routes work
-- Light and dark themes work
-- Responsive layouts work
+- Light/dark themes work
+- Responsive layouts work on mobile and desktop
+
+---
 
 ## Development Workflow
 
-A typical development workflow is:
+Typical local workflow:
 
-```text
-Start PostgreSQL
-      ↓
-Start Django backend
-      ↓
-Start Vite frontend
-      ↓
-Login
-      ↓
-Create Project
-      ↓
-Create Resource
-      ↓
-Add Fields
-      ↓
-Configure Generators
-      ↓
-Publish Resource
-      ↓
-Test Mock API
-```
+1. Start PostgreSQL  
+2. Start Django backend  
+3. Start Vite frontend (`npm run dev`)  
+4. Log in  
+5. Create a project  
+6. Create a resource  
+7. Add fields and configure generators  
+8. Publish the resource  
+9. Test the mock API from the UI or an external client  
+
+---
 
 ## Production Deployment
 
-The frontend is a static Vite application after building.
-
-The production deployment process is:
+After building:
 
 ```bash
 npm install
 npm run build
 ```
 
-Deploy the generated `dist/` directory using your chosen static hosting provider.
+Deploy the `dist/` directory to your static hosting provider. In production, the frontend must point to the deployed MockForge API via environment configuration (e.g. `VITE_API_BASE_URL` set to the production API base).
 
-The production frontend must point to the deployed MockForge API through the appropriate environment configuration.
+Important:
 
-## Important
+- Do not hardcode API URLs, secrets, JWTs, DB credentials, or private tokens in the code.
+- Use environment variables for environment‑specific configuration.
 
-Do not hardcode:
-
-- API URLs
-- Secrets
-- JWT values
-- Database credentials
-- Private tokens
-
-Use environment variables for environment-specific configuration.
+---
 
 ## Contributing
 
-Before opening a pull request:
+Before opening a pull request for the frontend:
 
-1. Install dependencies.
-2. Run the development server.
-3. Verify the affected feature.
-4. Run ESLint.
-5. Run the production build.
-6. Test the affected API integration.
-7. Check responsive behavior.
-8. Review the changed files before committing.
+- Install dependencies and run the dev server.
+- Verify the affected feature manually.
+- Run ESLint.
+- Run the production build.
+- Test the related API integration.
+- Check responsive behavior on different screen sizes.
+- Review the changed files before committing.
 
-MockForge is actively developed, so frontend behavior and structure may evolve as new platform features are introduced.
+MockForge is actively developed, so frontend structure and behavior may evolve as new platform features are added.

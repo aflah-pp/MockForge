@@ -1,8 +1,10 @@
 # MockForge Server
 
-The backend application for MockForge.
+Backend application for MockForge.
 
-MockForge Server provides the REST API, authentication, project management, resource management, field configuration, data generators, dashboard data, and dynamically generated mock API responses.
+This Django project provides the REST API, authentication, project/resource/field management, data generators, dashboard data, and dynamically generated mock API responses. Product‑level details are in the root [README](../README.md); this file focuses on running and extending the backend.
+
+---
 
 ## Tech Stack
 
@@ -14,20 +16,22 @@ MockForge Server provides the REST API, authentication, project management, reso
 - Ruff
 - Django test framework
 
-## Requirements
+---
 
-Before running the backend, make sure you have:
+## Requirements
 
 - Python 3.12+
 - PostgreSQL
 - pip
 - Git
 
-Check your Python version:
+Check Python version:
 
 ```bash
 python --version
 ```
+
+---
 
 ## Project Structure
 
@@ -45,177 +49,120 @@ server/
 └── ...
 ```
 
-The backend is divided into Django applications based on application responsibility.
+The backend is split into Django apps by responsibility.
 
-## Core Applications
+### Core Applications
 
-### Users
+- **users**  
+  Registration, login, JWT auth, token refresh, logout (including “logout from all sessions”), profile, password changes, email verification, account deactivation.
 
-Handles:
+- **projects**  
+  Project management (top‑level containers for mock APIs).
 
-- User registration
-- Login
-- JWT authentication
-- Token refresh
-- Logout
-- Logout from all sessions
-- User profile
-- Password changes
-- Email verification
-- Account deactivation
+- **resources**  
+  Resources inside projects (e.g. `Product`, `User`, `Order`).
 
-### Projects
+- **generators**  
+  Generator registry and API. Generators produce realistic values like `person.full_name`, `internet.email`, `commerce.price`, `random.integer`, `random.boolean`, `uuid.v4`.
 
-Handles project management.
+- **dashboard**  
+  Aggregated stats for the frontend dashboard (project counts, resource info, recent activity, etc.), computed from real data instead of hardcoded values.
 
-Projects are the top-level containers for mock APIs.
-
-### Resources
-
-Resources represent API entities inside projects.
-
-For example:
-
-```text
-Project
-└── Product
-```
-
-### Generators
-
-The generator system creates realistic values for configured resource fields.
-
-Examples include:
-
-```text
-person.full_name
-internet.email
-commerce.price
-random.integer
-random.boolean
-uuid.v4
-```
-
-Generators are registered through the generator registry and exposed through the generator API.
-
-### Dashboard
-
-The dashboard application provides aggregated information used by the frontend dashboard.
-
-It calculates information from the user's active projects and resources rather than relying on hardcoded frontend values.
+---
 
 ## Installation
 
-From the MockForge root directory:
+From the repository root:
 
 ```bash
 cd server
-```
-
-Create a virtual environment:
-
-```bash
 python -m venv .venv
 ```
 
-Activate it.
+Activate the virtual environment:
 
-### macOS / Linux
+- macOS / Linux:
 
-```bash
-source .venv/bin/activate
-```
+  ```bash
+  source .venv/bin/activate
+  ```
 
-### Windows
+- Windows:
 
-```powershell
-.venv\Scripts\activate
-```
+  ```bash
+  .venv\Scripts\activate
+  ```
 
-## Install Dependencies
-
-Install the backend requirements:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
+---
+
 ## Environment Configuration
 
-MockForge uses environment variables for application configuration.
+MockForge uses environment variables for configuration. At minimum, configure:
 
-Configure the required values for:
+- `SECRET_KEY`
+- `DATABASE_URL`
+- `CORS_ALLOWED_ORIGINS`
+- JWT‑related settings as required by the project
 
-```text
-SECRET_KEY
-DATABASE_URL
-CORS_ALLOWED_ORIGINS
-```
+Example PostgreSQL URL:
 
-JWT-related configuration should also be configured according to the project's settings.
-
-Example PostgreSQL connection:
-
-```text
+```env
 DATABASE_URL=postgresql://username:password@localhost:5432/mockforge
 ```
 
 Do not commit environment files or secrets.
 
+---
+
 ## Database
 
-MockForge uses PostgreSQL as its primary database.
-
-The database stores application configuration and user data such as:
+MockForge uses PostgreSQL as its primary database. It stores:
 
 - Users
 - Projects
 - Resources
 - Fields
 - Generator configuration
-- Audit information
+- Audit‑related information
 
-Generated mock response values are produced dynamically.
+Mock response values are generated dynamically; the DB does not need thousands of fake rows just to return mock data.
 
-MockForge does not need to permanently store thousands of generated records just to return mock responses.
+---
 
 ## Migrations
 
-Run database migrations:
+Apply migrations:
 
 ```bash
 python manage.py migrate
 ```
 
-When developing models, create migrations when required:
+When you change models:
 
 ```bash
 python manage.py makemigrations
-```
-
-Then apply them:
-
-```bash
 python manage.py migrate
 ```
 
-## Start the Development Server
+---
 
-Run:
+## Run the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-The backend will normally be available at:
+By default, the backend is available at:
 
 ```text
 http://127.0.0.1:8000
 ```
-
-## API
-
-The application API is versioned.
 
 The main API namespace is:
 
@@ -223,87 +170,60 @@ The main API namespace is:
 /api/v1/
 ```
 
-Major API areas include:
+Key areas include:
 
-```text
-/api/v1/users/
-/api/v1/projects/
-/api/v1/generators/
-```
+- `/api/v1/users/`
+- `/api/v1/projects/`
+- `/api/v1/generators/`
 
-Resource and mock API routes are provided by their respective applications.
+Resource and mock API routes are provided by their respective apps.
+
+---
 
 ## Generator API
 
-Available generators can be retrieved through:
+Available generators:
 
-```text
+```bash
 GET /api/v1/generators/
 ```
 
-The response describes:
+Response includes:
 
 - Generator key
 - Supported field types
 - Available configuration options
 
-For example:
+Example:
 
-```text
-person.full_name
-```
+- `person.full_name` supports `string`
+- `random.integer` supports `integer`
 
-supports:
+This allows the frontend to show only compatible generators for each field type.
 
-```text
-string
-```
-
-while:
-
-```text
-random.integer
-```
-
-supports:
-
-```text
-integer
-```
-
-This allows the frontend to determine which generators are compatible with a field.
+---
 
 ## Mock API Generation
 
-The main MockForge workflow is:
+Core workflow:
 
-```text
-Project
-   ↓
-Resource
-   ↓
-Fields
-   ↓
-Generator Configuration
-   ↓
-Publish
-   ↓
-Mock API Request
-   ↓
-Generated JSON
-```
+1. Project  
+2. Resource  
+3. Fields  
+4. Generator configuration  
+5. Publish  
+6. Mock API request  
+7. Generated JSON  
 
-Mock responses are generated from the resource definition and field generator configuration.
+Mock responses are generated from the resource definition and field generator configuration; they are not stored as permanent rows.
+
+---
 
 ## Authentication
 
-MockForge uses JWT authentication.
+MockForge uses JWT authentication. Refresh tokens are handled via secure HttpOnly cookies according to the backend configuration.
 
-The refresh token is handled through a secure HttpOnly cookie according to the backend authentication configuration.
-
-The backend provides endpoints for authentication and session management.
-
-Authentication must be tested carefully whenever changes are made to:
+Endpoints cover:
 
 - Login
 - Registration
@@ -312,9 +232,16 @@ Authentication must be tested carefully whenever changes are made to:
 - Password changes
 - User deactivation
 
-## Testing
+Whenever you touch these areas, test:
 
-The backend contains an automated test suite covering the application's core functionality.
+- Login / registration flows
+- Token refresh behavior
+- Logout (single and “all sessions”)
+- Password change & deactivation paths
+
+---
+
+## Testing
 
 Run the Django test suite:
 
@@ -322,85 +249,70 @@ Run the Django test suite:
 python manage.py test
 ```
 
-The CI pipeline also executes the backend test suite.
+CI also runs the backend tests. Before merging backend changes, verify:
 
-Before merging backend changes, verify:
+- Tests pass
+- Linting passes
+- Application checks pass
+- Manual review of changed files and migrations
 
-```text
-Tests
-   ↓
-Lint
-   ↓
-Application checks
-   ↓
-Review
-```
+---
 
 ## Linting
 
-MockForge uses Ruff for Python linting and formatting.
+MockForge uses Ruff for linting and formatting.
 
-Run Ruff:
+Check:
 
 ```bash
 ruff check .
 ```
 
-If formatting is configured for the project, run:
+Format (if configured for the project):
 
 ```bash
 ruff format .
 ```
 
-Do not ignore lint errors without understanding why they occur.
+Do not ignore lint errors without understanding them.
+
+---
 
 ## Django Checks
 
-Run Django's application checks:
+Run Django’s system checks:
 
 ```bash
 python manage.py check
 ```
 
-This should pass before changes are committed.
+This should pass before committing changes.
+
+---
 
 ## Development Workflow
 
-A typical local workflow is:
+Typical local setup:
 
-```text
-PostgreSQL
-   ↓
-Django
-   ↓
-REST API
-   ↓
-React Frontend
-```
+1. PostgreSQL running  
+2. Django backend running  
+3. React frontend running  
 
 For a mock API feature:
 
-```text
-Create Project
-      ↓
-Create Resource
-      ↓
-Create Fields
-      ↓
-Configure Generators
-      ↓
-Publish Resource
-      ↓
-Request Mock Endpoint
-      ↓
-Generate Response
-```
+- Create project  
+- Create resource  
+- Create fields  
+- Configure generators  
+- Publish resource  
+- Hit the mock endpoint  
+- Verify generated JSON  
+
+---
 
 ## Production Considerations
 
-The Django development server is intended for local development only.
-
-For production, deploy Django using an appropriate production WSGI/ASGI setup and configure:
+The Django development server is for local use only. For production, deploy with a proper WSGI/ASGI setup and configure:
 
 - Production `SECRET_KEY`
 - PostgreSQL
@@ -410,43 +322,39 @@ For production, deploy Django using an appropriate production WSGI/ASGI setup an
 - JWT configuration
 - HTTPS
 - Static/media handling
-- Environment-specific settings
+- Environment‑specific settings
 
 Never expose development secrets in production.
 
+---
+
 ## Docker
 
-Docker is not currently part of the MockForge self-hosted setup.
+Docker is not currently part of the self‑hosted setup. The project runs directly with Python, Django, PostgreSQL, Node.js, and React. Docker support may be added later as deployment needs evolve.
 
-The current setup runs directly using Python, Django, PostgreSQL, Node.js, and React.
-
-Docker support may be added in the future as the deployment architecture evolves.
+---
 
 ## Backend Quality Rules
 
 Before committing backend changes:
 
-1. Run Django checks.
-2. Run the test suite.
-3. Run Ruff.
-4. Verify database migrations.
-5. Test affected API endpoints.
-6. Check authentication behavior when relevant.
-7. Review the migration and changed files.
-8. Confirm that no secrets or environment files are committed.
+- Run Django checks.
+- Run the test suite.
+- Run Ruff.
+- Verify database migrations.
+- Test affected API endpoints.
+- Check authentication behavior where relevant.
+- Review migrations and changed files.
+- Confirm that no secrets or environment files are committed.
 
-## Contributing
+When contributing:
 
-MockForge is actively developed.
-
-When contributing backend changes:
-
-- Keep business logic inside appropriate services.
+- Keep business logic in services.
 - Keep views focused on HTTP concerns.
 - Keep serializers responsible for validation and representation.
 - Keep generator behavior inside the generator system.
 - Avoid duplicating business rules.
 - Add tests for new business behavior.
-- Keep API behavior backwards-compatible where possible.
+- Keep API behavior backwards‑compatible where possible.
 
 The goal is to keep the backend modular as MockForge grows into a larger API mocking platform.

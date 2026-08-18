@@ -1,90 +1,64 @@
 # MockForge
 
-Open-source mock API infrastructure for building and testing applications before the real backend is ready.
+**Open‑source mock API infrastructure for building and testing applications before the real backend is ready.**
 
 MockForge lets you define projects, resources, fields, and data generators through a web dashboard and exposes generated mock REST endpoints that return realistic JSON data.
+
+It’s a real working application, not a demo or static mockup. V1 focuses on getting the core mock API workflow reliable before adding more advanced behavior.
+
+---
+
+## Quick Links
+
+- **Hosted App:** <https://mock-forge.netlify.app/>
+- **Repository:** <https://github.com/aflah-pp/MockForge>
+- **Documentation:** <https://mock-forge.netlify.app/docs>
+- **License:** [LICENSE](LICENSE)
 
 ---
 
 ## Why MockForge?
 
-Frontend development should not have to wait for backend development.
+Frontend development shouldn’t wait for backend development.
 
-Without a mock API, a typical workflow looks like:
+Typical workflow without a mock API:
 
-```text
-Frontend
-   ↓
-"I need an API"
-   ↓
-Backend is not ready
-   ↓
-Frontend development waits
-```
+- Frontend needs an API
+- Backend isn’t ready
+- Frontend work stalls
 
-MockForge changes that:
+With MockForge:
 
-```text
-Frontend
-   ↓
-MockForge
-   ↓
-Generated JSON
-```
+- Frontend → MockForge → Generated JSON
 
-You can create a mock API, connect it to your application, and start building UI, forms, loading states, empty states, and other frontend functionality immediately.
+You can create a mock API, connect it to your application, and start building UI, forms, loading states, empty states, error states, and other frontend functionality before the real backend exists.
+
+The idea is simple: define the shape of the data once and let MockForge generate the response.
 
 ---
 
-## Current Status
+## Live Demo
 
-MockForge is currently in active development.
+A hosted version of MockForge is available so you can try the current V1 without setting up Python, Node.js, PostgreSQL, etc.
 
-The current V1 release focuses on:
+- **Web application:** <https://mock-forge.netlify.app/>
 
-- User authentication
-- Project management
-- Resource management
-- Field management
-- Configurable data generators
-- Dynamic mock API generation
-- GET mock endpoints
-- Image URL generation
-- File URL generation
-- Dashboard statistics
-- API configuration through the web interface
-- Self-hosted development
-- Hosted usage
-
-The project currently focuses on simple, developer-friendly mock REST APIs rather than trying to become a complete backend replacement.
+The hosted app uses the current production deployment of the MockForge frontend and backend. It’s part of an actively developed project, so behavior and features can change between releases.
 
 ---
 
-## Core Workflow
+## What MockForge Actually Does
 
-The main MockForge workflow is:
+MockForge doesn’t create a traditional database full of fake records for every mock request.
 
-```text
-Create Account
-      ↓
-Create Project
-      ↓
-Create Resource
-      ↓
-Create Fields
-      ↓
-Choose Generators
-      ↓
-Publish Resource
-      ↓
-Get Mock API
-      ↓
-Send HTTP Request
-      ↓
-Receive Generated JSON
-```
+Instead, you define an API schema:
 
-For example:
+- Project
+- Resource
+- Fields
+- Generators
+
+Example:
 
 ```text
 Ecommerce
@@ -95,7 +69,45 @@ Ecommerce
     └── image
 ```
 
-MockForge can generate a response from this configuration without requiring you to manually create product records.
+When a mock endpoint is hit, MockForge uses that configuration to generate the response dynamically:
+
+```text
+HTTP Request
+  → Resource configuration
+  → Field definitions
+  → Generator registry
+  → Generated values
+  → JSON Response
+```
+
+This keeps the configuration small and manageable instead of requiring thousands of fake database rows.
+
+---
+
+## Core Workflow
+
+1. Create Account
+2. Create Project
+3. Create Resource
+4. Create Fields
+5. Choose Generators
+6. Publish Resource
+7. Get Mock API
+8. Send HTTP Request
+9. Receive Generated JSON
+
+Example resource:
+
+```text
+Ecommerce
+└── Product
+    ├── name
+    ├── price
+    ├── stock
+    └── image
+```
+
+Once published, the generated endpoint can be consumed by any application that can make HTTP requests.
 
 ---
 
@@ -103,28 +115,20 @@ MockForge can generate a response from this configuration without requiring you 
 
 ### Authentication
 
-MockForge provides user authentication for the dashboard.
+MockForge provides authentication for the dashboard and management API (separate from auth in apps consuming mock endpoints).
 
-Current authentication functionality includes:
-
-- Registration
-- Login
+- Registration & login
 - JWT authentication
-- Refresh tokens
-- HttpOnly refresh-token cookies
-- Logout
-- Logout from all sessions
-- Current-user information
-- Profile updates
-- Password changes
+- Refresh tokens with HttpOnly cookies
+- Logout & logout from all sessions
+- Current user info
+- Profile updates & password changes
 - Email verification
 - Account deactivation
 
 ### Projects
 
-Projects are the top-level container for your mock APIs.
-
-A project can contain multiple resources.
+Projects are the top‑level container for mock APIs. A project can contain multiple resources.
 
 Example:
 
@@ -138,30 +142,18 @@ Ecommerce
 
 Projects support:
 
-- Creation
-- Listing
-- Updating
-- Publishing
-- Unpublishing
-- Slug-based identification
+- Creation, listing, updating
+- Publishing & unpublishing
+- Slug‑based identification
 - Soft deletion
 
 ### Resources
 
-Resources represent the data exposed by your mock API.
+Resources represent the data exposed by a mock API.
 
-Examples:
+Examples: `Product`, `User`, `Company`, `Order`, `Student`, `Article`.
 
-```text
-Product
-User
-Company
-Order
-Student
-Article
-```
-
-Each resource belongs to a project and contains its field definitions.
+Each resource belongs to a project and contains its field definitions. A resource must be configured and published before it’s available through the generated mock API.
 
 ### Fields
 
@@ -178,7 +170,7 @@ Product
 └── image
 ```
 
-MockForge currently supports field types such as:
+Supported field types include:
 
 - String
 - Integer
@@ -194,252 +186,91 @@ Fields can be connected to supported data generators.
 
 Generators determine how MockForge creates values.
 
-For example:
+Examples:
 
-```text
-name
-   ↓
-person.full_name
-   ↓
-"John Smith"
-```
+- `name` → `person.full_name` → `"John Smith"`
+- `price` → `commerce.price` → `2499.99`
 
-Or:
+Generators are registered through the backend generator registry and exposed to the frontend dynamically. This keeps the generator system independent from the frontend and makes it easy to add new generators without hard‑coding them into the dashboard.
 
-```text
-price
-   ↓
-commerce.price
-   ↓
-2499.99
-```
+#### Available Generators
 
-Generators are registered through the backend generator registry and exposed to the frontend dynamically.
+**Address** (`string`)
 
-This allows the dashboard to understand which generators are available and which field types they support.
+- `address.city`
+- `address.country`
+- `address.street`
+- `address.zipcode`
 
----
+**Choice** (`string`)
 
-## Available Generators
+- `choice.picker`  
+  Options: `choices` (your own possible values)
 
-### Address
+**Commerce**
 
-```text
-address.city
-address.country
-address.street
-address.zipcode
-```
+- `commerce.category` (`string`)
+- `commerce.currency` (`string`)
+- `commerce.price` (`decimal`)  
+  Options: `decimal_places`, `minimum`, `maximum`
+- `commerce.product_name` (`string`)
 
-Supported type:
+**Company** (`string`)
 
-```text
-string
-```
+- `company.name`
 
-### Choice
+**Date and Time**
 
-```text
-choice.picker
-```
+- `datetime.date` (`date`)
+- `datetime.datetime` (`datetime`)  
+  Options: `start`, `end`
 
-Supported type:
+**Internet** (`string`)
 
-```text
-string
-```
+- `internet.domain`
+- `internet.email` (option: `domain`)
+- `internet.phone`
+- `internet.url`
 
-Options:
+**Person** (`string`)
 
-```text
-choices
-```
+- `person.first_name`
+- `person.full_name`
+- `person.job_title`
+- `person.last_name`
+- `person.username`
 
-This allows you to provide your own possible values.
+**Random**
 
-### Commerce
+- `random.boolean` (`boolean`)  
+  Option: `true_probability`
+- `random.decimal` (`decimal`)  
+  Options: `decimal_places`, `minimum`, `maximum`
+- `random.integer` (`integer`)  
+  Options: `minimum`, `maximum`
 
-```text
-commerce.category
-commerce.currency
-commerce.price
-commerce.product_name
-```
+**Text** (`string`)
 
-Supported types:
+- `text.paragraph` (option: `sentences`)
+- `text.sentence` (option: `words`)
 
-```text
-string
-decimal
-```
+**UUID**
 
-`commerce.price` supports:
-
-```text
-decimal_places
-minimum
-maximum
-```
-
-### Company
-
-```text
-company.name
-```
-
-Supported type:
-
-```text
-string
-```
-
-### Date and Time
-
-```text
-datetime.date
-datetime.datetime
-```
-
-Supported types:
-
-```text
-date
-datetime
-```
-
-Both support:
-
-```text
-start
-end
-```
-
-### Internet
-
-```text
-internet.domain
-internet.email
-internet.phone
-internet.url
-```
-
-Supported type:
-
-```text
-string
-```
-
-`internet.email` supports:
-
-```text
-domain
-```
-
-### Person
-
-```text
-person.first_name
-person.full_name
-person.job_title
-person.last_name
-person.username
-```
-
-Supported type:
-
-```text
-string
-```
-
-### Random
-
-```text
-random.boolean
-random.decimal
-random.integer
-```
-
-Supported types:
-
-```text
-boolean
-decimal
-integer
-```
-
-`random.boolean` supports:
-
-```text
-true_probability
-```
-
-`random.decimal` supports:
-
-```text
-decimal_places
-minimum
-maximum
-```
-
-`random.integer` supports:
-
-```text
-minimum
-maximum
-```
-
-### Text
-
-```text
-text.paragraph
-text.sentence
-```
-
-Supported type:
-
-```text
-string
-```
-
-`text.paragraph` supports:
-
-```text
-sentences
-```
-
-`text.sentence` supports:
-
-```text
-words
-```
-
-### UUID
-
-```text
-uuid.v4
-```
-
-Supported type:
-
-```text
-uuid
-```
+- `uuid.v4` (`uuid`)
 
 ---
 
 ## Dynamic Mock API
 
-After configuring a resource, MockForge can expose it as a mock API endpoint.
+After configuring and publishing a resource, MockForge exposes it through a generated mock API endpoint.
 
-A typical endpoint follows the project and resource structure.
+A typical endpoint follows the project and resource structure:
 
-Example:
-
-```text
-/api/ecommerce/products
+```http
+GET /api/v1/ecommerce/products
 ```
 
-A GET request can return generated JSON such as:
+Example response:
 
 ```json
 [
@@ -448,56 +279,29 @@ A GET request can return generated JSON such as:
     "name": "Wireless Keyboard",
     "price": 2499.99,
     "stock": 42,
-    "image": "https://example.com/image.jpg"
+    "image_url": "https://example.com/image"
   }
 ]
 ```
 
-The generated values are dynamic and can change between requests.
-
----
-
-## Generated Data Is Not Stored as Records
-
-MockForge stores the API configuration rather than creating thousands of fake database rows.
-
-The database stores information such as:
-
-```text
-Project
-Resource
-Field
-Generator
-Generator configuration
-```
-
-When a mock endpoint is requested:
-
-```text
-HTTP Request
-     ↓
-Resource configuration
-     ↓
-Field definitions
-     ↓
-Generator registry
-     ↓
-Generated values
-     ↓
-JSON Response
-```
-
-This keeps mock-data generation lightweight and configuration-driven.
+Generated values are not permanent database records. They are created from the resource configuration when the mock endpoint is requested.
 
 ---
 
 ## Dashboard
 
-The MockForge dashboard provides a central place to manage your mock APIs.
+The MockForge dashboard is where you manage projects and mock APIs.
 
-The dashboard includes project information and real-time application data based on the user's current projects and resources.
+It includes:
 
-It is designed to give developers a quick overview without requiring them to manually inspect database records or API configuration.
+- Project, resource, and field statistics
+- API request information
+- Recently updated projects
+- Project resource distribution
+- Project, resource, and field management
+- Account settings
+
+The dashboard is designed to make configuration easier than manually editing API schemas or database records.
 
 ---
 
@@ -505,50 +309,43 @@ It is designed to give developers a quick overview without requiring them to man
 
 ### Backend
 
-MockForge uses:
-
 - Python
 - Django
 - Django REST Framework
-- PostgreSQL
+- PostgreSQL/NeonDb
 - JWT authentication
 
-The backend follows a modular Django architecture with separated applications for major domain areas.
+The backend follows a modular Django architecture with separate apps for major domain areas.
 
 ### Frontend
-
-The web application uses:
 
 - React
 - Vite
 - JavaScript / JSX
 - Tailwind CSS
 - React Router
+- TanStack Query
+- Zustand
 - shadcn/ui
 - Lucide React
 
-The frontend is organized around feature-based modules.
+The frontend is organized around feature‑based modules.
 
 ### Database
 
-MockForge uses:
+- PostgreSQL/NeonDb
 
-- PostgreSQL
-
-The database stores application and API configuration data such as:
+The database stores application and API configuration data:
 
 - Users
 - Projects
 - Resources
 - Fields
 - Generator configuration
-- Audit-related information
 
 ---
 
 ## Project Structure
-
-The repository is organized into separate backend and frontend applications.
 
 ```text
 MockForge
@@ -564,195 +361,187 @@ MockForge
 └── web
     └── src
         ├── components
+        ├── contexts
         ├── features
+        ├── routes
         ├── service
         └── ...
 ```
 
-The backend contains the API and business logic.
-
-The frontend contains the dashboard, documentation, forms, resource management interface, and API-related UI.
+- `server`: API and business logic
+- `web`: Dashboard, documentation, forms, resource management UI, authentication flow, API‑related UI
 
 ---
 
 ## API Architecture
 
-MockForge separates API concerns into dedicated backend modules.
+API concerns are separated into dedicated backend modules:
 
-The backend contains areas for:
+- Authentication
+- Projects
+- Resources
+- Fields
+- Generators
+- Dashboard
+- Shared infrastructure
 
-```text
-Authentication
-Projects
-Resources
-Fields
-Generators
-Dashboard
-Shared infrastructure
-```
-
-Business logic is kept separate from views where appropriate, allowing the API layer to remain easier to maintain and test.
+Business logic is kept separate from views where appropriate to make the API layer easier to test and maintain as functionality grows.
 
 ---
 
 ## Generator Architecture
 
-Generators are registered centrally through the generator registry.
-
-Conceptually:
+Generators are registered centrally through a generator registry:
 
 ```text
 Generator Registry
-       ↓
-Generator Definition
-       ↓
-Supported Field Types
-       ↓
-Generator Options
-       ↓
-Runtime Value Generation
+  → Generator Definition
+  → Supported Field Types
+  → Generator Options
+  → Runtime Value Generation
 ```
 
-Each generator can define:
+Each generator defines:
 
 - A unique generator key
 - Supported field types
 - Configurable options
 - Runtime generation behavior
 
-This makes the generator system extensible without hard-coding every generator directly into the frontend.
+The frontend discovers generator information from the backend, so the backend remains the source of truth for what the API can actually generate.
 
 ---
 
-## Testing
+## API Request Behavior
 
-MockForge includes automated backend tests covering the application's core functionality.
+The current mock API is intentionally limited compared to a real backend. At the moment, the main generated API behavior is GET‑based.
 
-The backend test suite currently contains more than 180 tests and is executed as part of the project's continuous integration workflow.
+Example:
 
-Example CI result:
-
-```text
-Ran 182 tests in 97.788s
-
-OK
+```http
+GET /api/v1/ecommerce/products
 ```
 
-The test database is created and destroyed during the test run, keeping test execution isolated from normal development data.
+The response is generated from the configured fields and generators.
 
-The project also uses code-quality tooling such as Ruff for Python linting and formatting checks.
+MockForge is currently best suited for:
+
+- Frontend development
+- UI prototyping
+- API integration testing
+- Demonstrations
+- Early application development
+- Mobile application prototyping
+
+It is not intended to replace a production backend.
 
 ---
 
-## Continuous Integration
+## Self‑Hosted Development
 
-The project uses CI to validate backend changes before they are considered ready.
+MockForge can be run locally without Docker.
 
-The CI workflow checks the backend test suite and code quality.
+### Requirements
 
-The goal is:
+- Python
+- Node.js
+- npm
+- PostgreSQL
+- Git
 
-```text
-Code Change
-    ↓
-Lint / Quality Checks
-    ↓
-Automated Tests
-    ↓
-Pass
-    ↓
-Ready for Integration
-```
-
----
-
-## Self-Hosted Development
-
-MockForge can currently be run locally without Docker.
-
-The self-hosted development environment requires:
-
-```text
-Python
-Node.js
-npm
-PostgreSQL
-Git
-```
-
-The local architecture is:
+### Local Architecture
 
 ```text
 Browser
-   ↓
-React + Vite
-   ↓
-Django API
-   ↓
-PostgreSQL
+  → React + Vite
+  → Django API
+  → PostgreSQL
 ```
 
-Docker support is not currently part of the project.
-
-It may be added later as the deployment and self-hosting workflow evolves.
+Docker support is not currently part of the project. This is a current limitation, not a design claim. Docker support may be added later as deployment and self‑hosting workflows evolve.
 
 ---
 
 ## Hosted Usage
 
-If you use a hosted MockForge deployment, you do not need to install the development stack locally.
+The hosted version allows you to use MockForge without setting up the local development environment.
 
-You can use the web application to:
+- **Hosted application:** <https://mock-forge.netlify.app/>
 
-```text
-Create account
-     ↓
-Create project
-     ↓
-Create resource
-     ↓
-Configure fields
-     ↓
-Publish resource
-     ↓
-Use generated API
-```
+Workflow:
 
-Self-hosting is intended for developers who want to run and modify their own MockForge instance.
+1. Create account
+2. Create project
+3. Create resource
+4. Configure fields
+5. Publish resource and project
+6. Use generated API
+
+### Hosted Version Limitations
+
+The hosted deployment is primarily for trying and using the current project. Because MockForge is still actively developed:
+
+- Availability depends on current hosting infrastructure
+- Response times may vary
+- The service may be updated while development continues
+- Features in the repository may not always match the hosted deployment
+- Breaking changes may occur between early releases
+
+The hosted service should not be treated as a guaranteed production API platform. There are currently no enterprise‑level availability guarantees or SLAs.
+
+If you need complete control over the environment, self‑hosting is the better option.
 
 ---
 
 ## Using MockForge With Frontend Applications
 
-MockForge is HTTP-based, so you do not need a special SDK to consume a generated API.
+MockForge is HTTP‑based, so you don’t need a special SDK.
 
 You can use:
 
 - Fetch
 - Axios
-- React
-- Vue
-- Angular
-- React Native
-- Flutter
+- React, Vue, Angular
+- React Native, Flutter
 - Mobile HTTP clients
-- Postman
-- Insomnia
+- Postman, Insomnia
 - Any standard HTTP client
 
 Example:
 
-```javascript
+```js
 const response = await fetch("https://your-mockforge-url/api/ecommerce/products");
-
 const products = await response.json();
 ```
+
+The generated API is intended to be consumed like any other HTTP endpoint.
+
+---
+
+## What MockForge Is Not
+
+MockForge is not intended to be:
+
+- A replacement for Django
+- A replacement for a production backend
+- A production database
+- A full BaaS platform
+- A complete CRUD backend
+- A production authentication provider
+- A real‑time backend
+- A permanent data‑storage system
+
+Its purpose is narrower:
+
+- Define API structure
+- Generate realistic mock data
+- Use it while building the application
+
+That narrow scope is intentional.
 
 ---
 
 ## Current V1 Scope
-
-MockForge V1 intentionally keeps the feature set focused.
 
 ### Included
 
@@ -764,94 +553,98 @@ MockForge V1 intentionally keeps the feature set focused.
 - Dynamic mock data
 - GET mock APIs
 - Dashboard
-- Image URL fields
-- File URL fields
-- Self-hosted development
+- Self‑hosted development
+- Hosted usage
 
 ### Not Yet Included
 
-The following features are planned for future versions:
+Planned for future versions:
 
-- PUT
-- PATCH
-- DELETE
+- POST, PUT, PATCH, DELETE
 - Advanced CRUD behavior
 - Pagination
 - Filtering
 - Sorting
 - Resource relationships
 - WebSocket mocking
-- Authentication inside generated mock APIs
 - API templates
-- AI-generated responses
-- CLI tooling
-- Package-based integrations
+- AI‑generated responses
 - Docker support
 
-These features are part of the longer-term roadmap and are not requirements for the current V1 architecture.
 
 ---
 
 ## Roadmap
 
-MockForge is being actively developed.
-
-Planned areas include:
-
-### Real-time WebSocket Support
-
-Create mock WebSocket endpoints for:
-
-- Live updates
-- Chat applications
-- Streaming data
-- Real-time dashboards
-
-### Authentication and Authorization
-
-Support for:
-
-- JWT authentication
-- API keys
-- Role-based access control
-- Protected mock endpoints
+MockForge is being developed continuously.
 
 ### Full REST Method Support
 
 Expand beyond GET endpoints with:
 
-```text
-POST
-PUT
-PATCH
-DELETE
-```
+- POST
+- PUT
+- PATCH
+- DELETE
 
 This will allow MockForge to simulate more complete CRUD workflows.
-
-### API Templates
-
-Pre-built API configurations for common applications such as:
-
-```text
-E-commerce
-Blog
-User Management
-Dashboard
-```
 
 ### Pagination
 
 Support for:
 
 - Offset pagination
-- Cursor-based pagination
 - Configurable page sizes
-- Pagination metadata
 
-### AI-Generated Responses
+### Filtering and Sorting
 
-Future versions may allow developers to describe the data they need and generate more complex mock response structures automatically.
+Allow applications to test common API query behavior such as:
+
+- `?search=`
+- `?sort=`
+- `?ordering=`
+- `?filter=`
+
+### Resource Relationships
+
+Support relationships between resources such as:
+
+- User → Orders → Products
+
+### Authentication and Authorization
+
+Future mock APIs may support:
+
+- API keys
+- JWT authentication
+- Protected mock endpoints
+- Role‑based access control
+
+### Real‑time WebSocket Support
+
+Create mock WebSocket endpoints for:
+
+- Live updates
+- Chat applications
+- Streaming data
+- Real‑time dashboards
+
+### API Templates
+
+Pre‑built API configurations for common applications such as:
+
+- E‑commerce
+- Blog
+- User management
+- Dashboard
+
+### AI‑Generated Responses
+
+A possible future feature: describe the data you need and automatically generate more complex mock response structures.
+
+### Docker Support
+
+Docker support may be added to make self‑hosting and deployment easier.
 
 ---
 
@@ -859,82 +652,101 @@ Future versions may allow developers to describe the data they need and generate
 
 The project documentation covers:
 
-```text
-Getting Started
-    ├── Introduction
-    ├── Installation
-    └── Quick Start
+- **Getting Started**
+  - Introduction
+  - Installation
+  - Quick Start
+- **Build Your Mock API**
+  - Projects & Resources
+  - Fields
+  - Data Generators
+- **Use Your API**
+  - Connecting MockForge APIs
+- **API Reference**
+  - API Reference
+  - Generators
+- **Roadmap**
+  - What’s Coming
 
-Build Your Mock API
-    ├── Projects & Resources
-    ├── Fields
-    └── Data Generators
-
-Use Your API
-    └── Connecting MockForge APIs
-
-API Reference
-    ├── API Reference
-    └── Generators
-
-Roadmap
-    └── What's Coming
-```
+Documentation is developed alongside the application and may change as the API evolves.
 
 ---
 
 ## Open Source
 
-MockForge is an open-source project.
+MockForge is an open‑source project.
 
-The goal is to build a practical mock API platform that developers can use while working on frontend applications, prototypes, mobile applications, and development environments.
+Goal: build a practical mock API platform that developers can use while working on:
 
-Contributions, issues, feature discussions, and feedback are welcome.
+- Frontend applications
+- Prototypes
+- Mobile applications
+- Development environments
+- API integration work
+- Demonstrations
 
----
-
-## Development Philosophy
-
-MockForge is intentionally being built incrementally.
-
-The project does not try to solve every API-development problem at once.
-
-The current focus is:
-
-```text
-Simple
-     ↓
-Useful
-     ↓
-Reliable
-     ↓
-Extensible
-```
-
-The goal is to build a solid foundation first and add more advanced API behavior as the project matures.
+Contributions, issues, feature discussions, bug reports, and feedback are welcome.
 
 ---
 
-## License
+## Contributing
 
-[License](./LICENSE)
+If you want to contribute:
 
+- Start by looking at the existing architecture and documentation before making large changes.
+- For larger features, open an issue or discussion first so the implementation direction can be agreed on before significant work is done.
+
+Bug reports are especially useful when they include:
+
+- What you were trying to do
+- What you expected to happen
+- What actually happened
+- Steps to reproduce the issue
+- Relevant browser or server information
+
+Please do not include passwords, API keys, JWTs, cookies, or other secrets in issues or bug reports.
 
 ---
 
-## Repository
+## Feedback
 
-GitHub:
+Feedback is welcome.
 
-https://github.com/aflah-pp/MockForge
+If you find a bug, have a feature request, find something confusing, or simply have an idea for improving MockForge, please open an issue in the repository.
+
+The hosted application may also provide feedback functionality as the project evolves.
+
+---
+
+## Releases
+
+MockForge uses versioned releases as the project develops.
+
+- The V1 release represents the first focused version of the platform.
+- It does not mean that the API surface or architecture is considered final.
+- Future releases may introduce new API methods, configuration options, generator types, and deployment capabilities.
+
+Check the repository releases for the latest version and changes:  
+<https://github.com/aflah-pp/MockForge/releases>
 
 ---
 
 ## Status
 
-MockForge is actively developed and its APIs and features may evolve between releases.
+MockForge is actively developed.
 
-Current development is focused on strengthening the V1 platform, testing, documentation, API behavior, and the foundation required for future features.
+- The V1 platform is usable.
+- The project is not positioned as a finished enterprise product.
+- APIs, UI behavior, documentation, and features may evolve between releases.
+
+Current development focus:
+
+- Strengthening the V1 platform
+- Improving testing
+- Improving documentation
+- Expanding mock API behavior
+- Improving developer experience
+- Building a stronger foundation for future versions
 
 ---
 
@@ -942,10 +754,7 @@ Current development is focused on strengthening the V1 platform, testing, docume
 
 MockForge exists for a simple reason:
 
-```text
-Don't wait for the backend.
-
-Build the frontend.
-Mock the API.
-Ship faster.
-```
+- Don’t wait for the backend.
+- Build the frontend.
+- Mock the API.
+- Ship faster.

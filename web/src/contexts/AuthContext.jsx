@@ -1,9 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-
 import { useQueryClient } from "@tanstack/react-query";
-
 import useAuthStore from "@/service/store/authStore";
-
 import {
   getCurrentUser,
   loginUser,
@@ -11,14 +8,13 @@ import {
   logoutUser,
   refreshUserToken,
 } from "@/service/endpoints/auth";
-
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const queryClient = useQueryClient();
   const { accessToken, user, isAuthenticated, setAuth, clearAuth } = useAuthStore();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
-  
+
   const bootstrapAuth = useCallback(async () => {
     try {
       const data = await refreshUserToken();
@@ -27,11 +23,7 @@ export function AuthProvider({ children }) {
         throw new Error("Refresh response did not contain an access token.");
       }
 
-      const currentUser = await queryClient.fetchQuery({
-        queryKey: ["auth", "me"],
-        queryFn: getCurrentUser,
-        staleTime: 5 * 60 * 1000,
-      });
+      const currentUser = await getCurrentUser();
 
       setAuth({
         accessToken: data.access,
@@ -62,13 +54,7 @@ export function AuthProvider({ children }) {
         throw new Error("Login response did not contain an access token.");
       }
 
-      const currentUser = data.user
-        ? data.user
-        : await queryClient.fetchQuery({
-            queryKey: ["auth", "me"],
-            queryFn: getCurrentUser,
-            staleTime: 5 * 60 * 1000,
-          });
+      const currentUser = await getCurrentUser();
 
       setAuth({
         accessToken: data.access,
@@ -76,7 +62,6 @@ export function AuthProvider({ children }) {
       });
 
       queryClient.setQueryData(["auth", "me"], currentUser);
-
       return currentUser;
     },
     [queryClient, setAuth],

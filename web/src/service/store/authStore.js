@@ -30,6 +30,5 @@ const useAuthStore = create((set) => ({
       isAuthenticated: false,
     }),
 }));
-window.authStore = useAuthStore;
 
 export default useAuthStore;

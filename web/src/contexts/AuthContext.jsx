@@ -8,11 +8,12 @@ import {
   logoutUser,
   refreshUserToken,
 } from "@/service/endpoints/auth";
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const queryClient = useQueryClient();
-  const { accessToken, user, isAuthenticated, setAuth, clearAuth } = useAuthStore();
+  const { accessToken, user, isAuthenticated, setAccessToken, setUser, clearAuth } = useAuthStore();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
   const bootstrapAuth = useCallback(async () => {
@@ -23,12 +24,11 @@ export function AuthProvider({ children }) {
         throw new Error("Refresh response did not contain an access token.");
       }
 
+      setAccessToken(data.access);
+
       const currentUser = await getCurrentUser();
 
-      setAuth({
-        accessToken: data.access,
-        user: currentUser,
-      });
+      setUser(currentUser);
 
       queryClient.setQueryData(["auth", "me"], currentUser);
     } catch {
@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     } finally {
       setIsBootstrapping(false);
     }
-  }, [clearAuth, queryClient, setAuth]);
+  }, [clearAuth, queryClient, setAccessToken, setUser]);
 
   useEffect(() => {
     bootstrapAuth();
@@ -54,17 +54,17 @@ export function AuthProvider({ children }) {
         throw new Error("Login response did not contain an access token.");
       }
 
+      setAccessToken(data.access);
+
       const currentUser = await getCurrentUser();
 
-      setAuth({
-        accessToken: data.access,
-        user: currentUser,
-      });
+      setUser(currentUser);
 
       queryClient.setQueryData(["auth", "me"], currentUser);
+
       return currentUser;
     },
-    [queryClient, setAuth],
+    [queryClient, setAccessToken, setUser],
   );
 
   const logout = useCallback(async () => {

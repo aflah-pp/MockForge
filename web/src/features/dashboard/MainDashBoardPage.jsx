@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-
+import { useMemo } from "react";
 import { Activity, ArrowUpRight, Box, Database, FileCode2, FolderKanban, Plus } from "lucide-react";
-
+import { useQuery } from "@tanstack/react-query";
 import AppLayout from "@/components/layout/app-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-import api from "@/service/api";
+import { getDashboard } from "@/service/endpoints/dashboard";
 import { Link } from "react-router-dom";
 
 function formatDate(date) {
@@ -19,40 +17,19 @@ function formatDate(date) {
 }
 
 function MainDashBoardPage() {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function fetchDashboard() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const response = await api.get("dashboard/");
-
-        if (mounted) {
-          setDashboardData(response.data);
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err?.response?.data?.detail || "Failed to load dashboard data.");
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchDashboard();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const {
+    data: dashboardData,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: getDashboard,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
   const stats = useMemo(() => {
     if (!dashboardData) {
@@ -152,7 +129,7 @@ function MainDashBoardPage() {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <AppLayout>
         <main className="min-h-full w-full">
@@ -160,11 +137,16 @@ function MainDashBoardPage() {
             <Card className="w-full max-w-md">
               <CardHeader>
                 <CardTitle>Unable to load dashboard</CardTitle>
-                <CardDescription>{error}</CardDescription>
+
+                <CardDescription>
+                  {error?.response?.data?.detail ||
+                    error?.message ||
+                    "Failed to load dashboard data."}
+                </CardDescription>
               </CardHeader>
 
               <CardContent>
-                <Button onClick={() => window.location.reload()}>Try again</Button>
+                <Button onClick={() => refetch()}>Try again</Button>
               </CardContent>
             </Card>
           </div>
@@ -231,6 +213,7 @@ function MainDashBoardPage() {
 
                     <CardDescription>Your most recently updated projects.</CardDescription>
                   </div>
+
                   <Link to="/project/list">
                     <Button variant="outline" size="sm">
                       View all
@@ -251,10 +234,12 @@ function MainDashBoardPage() {
                       Create your first MockForge project to get started.
                     </p>
 
-                    <Button className="mt-4">
-                      <Plus className="mr-2 size-4" />
-                      Create Project
-                    </Button>
+                    <Link to="/project/create">
+                      <Button className="mt-4">
+                        <Plus className="mr-2 size-4" />
+                        Create Project
+                      </Button>
+                    </Link>
                   </div>
                 ) : (
                   <div className="divide-y">

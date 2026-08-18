@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 export function NavHelp({ helps }) {
   return (
@@ -15,7 +16,7 @@ export function NavHelp({ helps }) {
       <SidebarMenu>
         {helps.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton render={<a href={item.url} />}>
+            <SidebarMenuButton render={<Link to={item.url} />}>
               {item.icon}
               <span>{item.name}</span>
             </SidebarMenuButton>

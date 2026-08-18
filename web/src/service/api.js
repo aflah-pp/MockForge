@@ -2,7 +2,7 @@ import axios from "axios";
 
 import useAuthStore from "./store/authStore";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -32,14 +32,14 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const isRefreshRequest = originalRequest.url?.includes("/users/refresh/");
+    const isRefreshRequest = originalRequest.url?.includes("users/refresh/");
 
     if (error.response?.status === 401 && !originalRequest._retry && !isRefreshRequest) {
       originalRequest._retry = true;
 
       try {
         const { data } = await axios.post(
-          `${API_URL}/users/refresh/`,
+          `${API_URL}users/refresh/`,
           {},
           {
             withCredentials: true,

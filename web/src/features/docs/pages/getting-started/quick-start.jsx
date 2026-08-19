@@ -72,7 +72,7 @@ Copy it.
 It will look similar to:
 
 \`\`\`text
-https://your-mockvio-url/api/ecommerce/product
+https://your-mokvio-url/api/ecommerce/product
 \`\`\`
 
 Your actual URL will depend on your project and resource.
@@ -104,7 +104,7 @@ For example, with JavaScript:
 
 \`\`\`javascript
 const response = await fetch(
-  "https://your-mockvio-url/api/ecommerce/product"
+  "https://your-mokvio-url/api/ecommerce/product"
 );
 
 const data = await response.json();

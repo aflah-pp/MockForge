@@ -510,7 +510,7 @@ You can use:
 Example:
 
 ```js
-const response = await fetch("https://your-mockvio-url/api/ecommerce/products");
+const response = await fetch("https://your-mokvio-url/api/ecommerce/products");
 const products = await response.json();
 ```
 

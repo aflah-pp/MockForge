@@ -53,7 +53,7 @@ function App() {
         <Route path="/docs/build/projects-resources" element={<ProjectsResources />} />
         <Route path="/docs/build/fields" element={<Fields />} />
         <Route path="/docs/build/data-generators" element={<DataGenerators />} />
-        <Route path="/docs/api/connect-mockvio" element={<ConnectMokvio />} />
+        <Route path="/docs/api/connect-mokvio" element={<ConnectMokvio />} />
         <Route path="/docs/reference/api" element={<ApiReference />} />
         <Route path="/docs/reference/generators" element={<GeneratorsReference />} />
         <Route path="/docs/roadmap" element={<Roadmap />} />

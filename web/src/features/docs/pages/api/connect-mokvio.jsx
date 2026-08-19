@@ -18,7 +18,7 @@ Copy the generated API URL.
 It will look similar to:
 
 \`\`\`text
-https://your-mockvio-url/api/ecommerce/products
+https://your-mokvio-url/api/ecommerce/products
 \`\`\`
 
 Your actual URL will depend on your Mokvio project and resource.
@@ -56,7 +56,7 @@ You can use the browser's built-in **fetch** function.
 
 \`\`\`javascript
 const response = await fetch(
-  "https://your-mockvio-url/api/ecommerce/products"
+  "https://your-mokvio-url/api/ecommerce/products"
 );
 
 const products = await response.json();
@@ -79,7 +79,7 @@ function Products() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("https://your-mockvio-url/api/ecommerce/products")
+    fetch("https://your-mokvio-url/api/ecommerce/products")
       .then((response) => response.json())
       .then((data) => setProducts(data));
   }, []);
@@ -106,7 +106,7 @@ If your application already uses Axios, you can use the generated API directly.
 import axios from "axios";
 
 const response = await axios.get(
-  "https://your-mockvio-url/api/ecommerce/products"
+  "https://your-mokvio-url/api/ecommerce/products"
 );
 
 console.log(response.data);
@@ -153,7 +153,7 @@ For example:
 \`\`\`text
 Development:
 
-https://mockvio.example/api/products
+https://mokvio.example/api/products
 
 Production:
 

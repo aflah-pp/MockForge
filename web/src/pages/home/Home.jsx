@@ -239,7 +239,7 @@ export default function Home() {
                     <span className="size-2 rounded-full bg-green-400/70" />
                   </div>
 
-                  <span className="ml-2 font-mono text-[9px] text-white/30">mockvio / api</span>
+                  <span className="ml-2 font-mono text-[9px] text-white/30">mokvio / api</span>
                 </div>
 
                 <div className="flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.16em] text-emerald-400">

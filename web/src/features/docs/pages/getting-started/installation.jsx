@@ -136,7 +136,7 @@ CORS_ALLOWED_ORIGINS
 For PostgreSQL, your database URL will look similar to:
 
 \`\`\`text
-DATABASE_URL=postgresql://username:password@localhost:5432/mockvio
+DATABASE_URL=postgresql://username:password@localhost:5432/mokvio
 \`\`\`
 
 Use your own PostgreSQL username, password, host, port, and database name.
@@ -150,7 +150,7 @@ Create a PostgreSQL database for Mokvio.
 For example:
 
 \`\`\`text
-mockvio
+mokvio
 \`\`\`
 
 Then point \`DATABASE_URL\` to that database.

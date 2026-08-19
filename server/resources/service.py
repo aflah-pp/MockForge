@@ -195,7 +195,9 @@ class ResourceService:
         supported_types = tuple(generator.supported_types)
 
         if not supported_types:
-            raise ValueError(f"Generator '{generator_key}' does not declare a supported data type.")
+            raise ValueError(
+                f"Generator '{generator_key}' does not declare a supported data type."
+            )
 
         if len(supported_types) > 1:
             raise ValueError(
@@ -231,7 +233,7 @@ class ResourceService:
                 project=project,
                 name=name,
                 slug=slug,
-                is_published=True,
+                is_published=False,
                 created_by=user,
             )
         except IntegrityError as exc:

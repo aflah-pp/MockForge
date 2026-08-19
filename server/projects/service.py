@@ -142,7 +142,7 @@ class ProjectService:
             owner=user,
             name=name,
             slug=slug,
-            is_published=True,
+            is_published=False,
             created_by=user,
         )
 

@@ -387,7 +387,9 @@ class AccountService:
         if user.check_password(new_password):
             raise ValidationError(
                 {
-                    "new_password": ("New password must be different from the " "current password."),
+                    "new_password": (
+                        "New password must be different from the " "current password."
+                    ),
                 }
             )
 

@@ -90,7 +90,7 @@ def service_validation_error(exc):
 
 class RegisterView(APIView):
     """
-     endpoint for creating a new user account.
+    endpoint for creating a new user account.
     """
 
     permission_classes = [permissions.AllowAny]
@@ -128,7 +128,7 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     """
-     endpoint for authenticating a user.
+    endpoint for authenticating a user.
 
     """
 

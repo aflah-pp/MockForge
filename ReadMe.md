@@ -10,9 +10,9 @@ It’s a real working application, not a demo or static mockup. V1 focuses on ge
 
 ## Quick Links
 
-- **Hosted App:** <https://mock-forge.netlify.app/>
+- **Hosted App:** <https://mokvio.netlify.app/>
 - **Repository:** <https://github.com/aflah-pp/Mokvio>
-- **Documentation:** <https://mock-forge.netlify.app/docs>
+- **Documentation:** <https://mokvio.netlify.app/docs>
 - **License:** [LICENSE](LICENSE)
 
 ---
@@ -41,7 +41,7 @@ The idea is simple: define the shape of the data once and let Mokvio generate th
 
 A hosted version of Mokvio is available so you can try the current V1 without setting up Python, Node.js, PostgreSQL, etc.
 
-- **Web application:** <https://mock-forge.netlify.app/>
+- **Web application:** <https://mokvio.netlify.app/>
 
 The hosted app uses the current production deployment of the Mokvio frontend and backend. It’s part of an actively developed project, so behavior and features can change between releases.
 
@@ -466,7 +466,7 @@ Docker support is not currently part of the project. This is a current limitatio
 
 The hosted version allows you to use Mokvio without setting up the local development environment.
 
-- **Hosted application:** <https://mock-forge.netlify.app/>
+- **Hosted application:** <https://mokvio.netlify.app/>
 
 Workflow:
 

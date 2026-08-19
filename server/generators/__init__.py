@@ -5,6 +5,7 @@ from . import (
     company,  # noqa: F401,
     datetime,  # noqa: F401,
     internet,  # noqa: F401,
+    location,  # noqa: F401,
     person,  # noqa: F401,
     random,  # noqa: F401,
     text,  # noqa: F401,

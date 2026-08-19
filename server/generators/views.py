@@ -7,14 +7,9 @@ from .registry import get_generator_metadata
 
 class GeneratorListView(APIView):
     """
-    API endpoint for retrieving available MockForge generators.
-
-    The generator registry is the single source of truth for all
-    available generators.
-
+    API endpoint for retrieving available Mokvio generators.
     The endpoint exposes only safe metadata required by the frontend
     to dynamically build field configuration forms.
-
     Authentication is not required because generator metadata does not
     expose project-specific or user-specific information.
     """

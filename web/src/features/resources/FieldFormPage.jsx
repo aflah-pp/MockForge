@@ -214,7 +214,7 @@ export default function FieldFormPage() {
               <CardTitle>Field Configuration</CardTitle>
 
               <CardDescription>
-                Configure how MockForge generates values for this field.
+                Configure how Mokvio generates values for this field.
               </CardDescription>
             </CardHeader>
 

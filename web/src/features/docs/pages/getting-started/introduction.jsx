@@ -5,13 +5,13 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # Introduction
 
-Welcome to **MockForge**.
+Welcome to **Mokvio**.
 
-MockForge helps you create mock APIs without building the backend first.
+Mokvio helps you create mock APIs without building the backend first.
 
-If you are building a frontend and need some API data, you can create it in MockForge and start using it immediately.
+If you are building a frontend and need some API data, you can create it in Mokvio and start using it immediately.
 
-## What can you do with MockForge?
+## What can you do with Mokvio?
 
 You can:
 
@@ -34,9 +34,9 @@ Ecommerce
     └── image
 \`\`\`
 
-MockForge will generate data for these fields when your API is requested.
+Mokvio will generate data for these fields when your API is requested.
 
-## Why use MockForge?
+## Why use Mokvio?
 
 Imagine you are building a frontend and you need:
 
@@ -46,21 +46,21 @@ GET /products
 
 But the real backend is not ready yet.
 
-Instead of waiting for the backend, you can create the same kind of API with MockForge.
+Instead of waiting for the backend, you can create the same kind of API with Mokvio.
 
 Your workflow becomes:
 
 \`\`\`text
 Frontend
    ↓
-MockForge
+Mokvio
    ↓
 JSON data
 \`\`\`
 
 You can continue building your pages, tables, forms, loading states, and other frontend features while the real backend is being developed.
 
-## How MockForge works
+## How Mokvio works
 
 You only need to understand three things to get started.
 
@@ -115,7 +115,7 @@ Full Name
 
 ## Your API
 
-After creating your resource and fields, publish it and MockForge gives you a mock API endpoint.
+After creating your resource and fields, publish it and Mokvio gives you a mock API endpoint.
 
 You can then use that endpoint from:
 
@@ -130,34 +130,34 @@ You can then use that endpoint from:
 - Postman
 - Any HTTP client
 
-## Does MockForge store fake records?
+## Does Mokvio store fake records?
 
 No.
 
-You create the structure of your API in MockForge.
+You create the structure of your API in Mokvio.
 
-When someone requests the mock endpoint, MockForge generates the data.
+When someone requests the mock endpoint, Mokvio generates the data.
 
 You don't need to manually create hundreds of fake records.
 
-## What MockForge is for
+## What Mokvio is for
 
-MockForge is mainly useful when:
+Mokvio is mainly useful when:
 
 - Your frontend needs an API before the backend is ready.
 - You want realistic data while developing.
 - You want to quickly prototype an application.
 - You want a simple API for testing.
 
-MockForge is not meant to replace your production backend.
+Mokvio is not meant to replace your production backend.
 
 It is a tool that helps you build and test applications faster.
 
 ## Ready to start?
 
-If you are running MockForge yourself, continue with **Installation**.
+If you are running Mokvio yourself, continue with **Installation**.
 
-If MockForge is already running, go directly to **Quick Start**.
+If Mokvio is already running, go directly to **Quick Start**.
 `;
 
 function Introduction() {

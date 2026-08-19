@@ -7,12 +7,6 @@ from shared.models import UUIDPrimaryKeyMixin
 class User(UUIDPrimaryKeyMixin, AbstractUser):
     """
     Application user model.
-
-    Represents the authentication identity of a MockForge user and stores
-    basic profile information required by the application.
-
-    User accounts maintain their own lifecycle timestamps because they are
-    authentication identities rather than user-owned configuration records.
     """
 
     username = models.CharField(

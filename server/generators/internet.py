@@ -10,8 +10,6 @@ fake = Faker()
 class EmailGenerator(BaseGenerator):
     """
     Generate a realistic email address.
-
-    An optional domain can be supplied to constrain the email domain.
     """
 
     key = "internet.email"

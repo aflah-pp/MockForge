@@ -5,7 +5,7 @@ _REGISTRY: dict[str, BaseGenerator] = {}
 
 def register(generator_class):
     """
-    Register a generator class in the MockForge generator registry.
+    Register a generator class in the Mokvio generator registry.
 
     Generator keys must be unique and every generator must explicitly
     declare the data types it supports.

@@ -44,7 +44,7 @@ export default function CreatorPage() {
               </p>
 
               <p>
-                MockForge started as a simple idea to make frontend development easier by providing
+                Mokvio started as a simple idea to make frontend development easier by providing
                 configurable mock APIs without having to build temporary backend services.
               </p>
             </div>
@@ -97,16 +97,16 @@ export default function CreatorPage() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold">Like MockForge?</p>
+                  <p className="text-sm font-semibold">Like Mokvio?</p>
 
                   <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                    If you find MockForge useful, consider starring the project on GitHub. It helps
+                    If you find Mokvio useful, consider starring the project on GitHub. It helps
                     the project get discovered and motivates continued development.
                   </p>
                 </div>
 
                 <a
-                  href="https://github.com/aflah-pp/MockForge"
+                  href="https://github.com/aflah-pp/Mokvio"
                   target="_blank"
                   rel="noreferrer noopener"
                   className="inline-flex shrink-0 items-center rounded-lg border bg-background px-3 py-2 text-xs font-medium transition-colors hover:bg-muted"
@@ -125,10 +125,10 @@ export default function CreatorPage() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold">Support MockForge</p>
+                  <p className="text-sm font-semibold">Support Mokvio</p>
 
                   <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                    If MockForge is useful to you, you’ll be able to support its development with a
+                    If Mokvio is useful to you, you’ll be able to support its development with a
                     coffee.
                   </p>
                 </div>

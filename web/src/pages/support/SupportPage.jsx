@@ -46,7 +46,7 @@ export default function SupportPage() {
               Support & Feedback
             </p>
 
-            <h1 className="mt-1 text-2xl font-bold tracking-tight">Help make MockForge better.</h1>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight">Help make Mokvio better.</h1>
 
             <p className="mt-1 text-sm text-muted-foreground">
               Found a bug, need help, have an idea, or something that could work better? Tell us

@@ -62,7 +62,7 @@ export default function DangerSettingsPage() {
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Danger Zone</h1>
 
                 <p className="mt-1 text-sm text-muted-foreground sm:text-base">
-                  Manage sensitive actions for your MockForge account.
+                  Manage sensitive actions for your Mokvio account.
                 </p>
               </div>
             </div>

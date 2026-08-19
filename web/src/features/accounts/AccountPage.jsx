@@ -24,7 +24,7 @@ export default function AccountPage() {
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Account</h1>
 
                 <p className="mt-1 text-sm text-muted-foreground sm:text-base">
-                  View and manage your MockForge account.
+                  View and manage your Mokvio account.
                 </p>
               </div>
             </div>

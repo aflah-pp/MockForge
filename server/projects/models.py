@@ -6,9 +6,8 @@ from shared.models import AuditMixin, UUIDPrimaryKeyMixin
 
 class Projects(UUIDPrimaryKeyMixin, AuditMixin):
     """
-    Represents a MockForge project owned by a single user.
+    Represents a Mokvio project owned by a single user.
 
-    Audit metadata is inherited from AuditMixin.
     """
 
     owner = models.ForeignKey(

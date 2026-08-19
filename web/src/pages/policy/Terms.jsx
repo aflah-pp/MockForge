@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 const sections = [
   {
     icon: UserCheck,
-    title: "Using MockForge",
+    title: "Using Mokvio",
     content: [
-      "You may use MockForge to create and manage mock APIs, projects, resources, fields, and related configurations for legitimate development and testing purposes.",
+      "You may use Mokvio to create and manage mock APIs, projects, resources, fields, and related configurations for legitimate development and testing purposes.",
       "You are responsible for the information and configurations you create through your account.",
       "You must provide accurate account information and keep your authentication credentials secure.",
     ],
@@ -18,8 +18,8 @@ const sections = [
     icon: ShieldAlert,
     title: "Prohibited use",
     content: [
-      "You may not use MockForge to facilitate unlawful activity, abuse, fraud, unauthorized access, attacks against systems, or other activity that violates applicable law.",
-      "You may not intentionally interfere with the availability, security, or normal operation of the hosted MockForge service.",
+      "You may not use Mokvio to facilitate unlawful activity, abuse, fraud, unauthorized access, attacks against systems, or other activity that violates applicable law.",
+      "You may not intentionally interfere with the availability, security, or normal operation of the hosted Mokvio service.",
       "You may not attempt to bypass authentication, rate limits, access controls, or other security mechanisms.",
       "You may not use the service to distribute malicious code or intentionally harmful content.",
     ],
@@ -28,16 +28,16 @@ const sections = [
     icon: Code2,
     title: "Open-source software",
     content: [
-      "MockForge is developed as open-source software. The source code is made available under the license included with the project.",
+      "Mokvio is developed as open-source software. The source code is made available under the license included with the project.",
       "The open-source license governs your rights to use, modify, and distribute the software itself.",
-      "The hosted MockForge service may have additional operational rules that apply specifically to use of the hosted platform.",
+      "The hosted Mokvio service may have additional operational rules that apply specifically to use of the hosted platform.",
     ],
   },
   {
     icon: FileCheck2,
     title: "Your content",
     content: [
-      "You retain responsibility for the projects, configurations, and other content you create using MockForge.",
+      "You retain responsibility for the projects, configurations, and other content you create using Mokvio.",
       "You must have the necessary rights to any content or data you submit to the service.",
       "You should not store passwords, private keys, production secrets, API credentials, or other sensitive credentials inside mock configurations unless the feature is explicitly designed for secure secret storage.",
     ],
@@ -72,7 +72,7 @@ export default function TermsPage() {
               </h1>
 
               <p className="mt-1 text-sm text-muted-foreground">
-                The rules for using the hosted MockForge service.
+                The rules for using the hosted Mokvio service.
               </p>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function TermsPage() {
               <CardContent className="pt-6">
                 <p className="text-sm leading-6 text-muted-foreground">
                   <strong className="text-foreground">Last updated: August 12, 2026.</strong> By
-                  creating an account or using the hosted MockForge service, you agree to these
+                  creating an account or using the hosted Mokvio service, you agree to these
                   Terms of Service. If you do not agree with these terms, do not use the hosted
                   service.
                 </p>
@@ -130,18 +130,18 @@ export default function TermsPage() {
 
               <CardContent className="space-y-3">
                 <p className="text-sm leading-6 text-muted-foreground">
-                  MockForge is provided on an as-available basis. We do not guarantee that the
+                  Mokvio is provided on an as-available basis. We do not guarantee that the
                   hosted service will always be available, uninterrupted, secure, or error-free.
                 </p>
 
                 <p className="text-sm leading-6 text-muted-foreground">
                   You should maintain appropriate backups of important configurations and
-                  development data. MockForge should not be treated as a replacement for production
+                  development data. Mokvio should not be treated as a replacement for production
                   infrastructure, backup systems, or secure secret management.
                 </p>
 
                 <p className="text-sm leading-6 text-muted-foreground">
-                  To the extent permitted by applicable law, MockForge and its contributors are not
+                  To the extent permitted by applicable law, Mokvio and its contributors are not
                   responsible for losses resulting from your use of the service or misuse of the
                   software.
                 </p>
@@ -155,7 +155,7 @@ export default function TermsPage() {
 
               <CardContent>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  These terms may be updated as MockForge evolves. Continued use of the hosted
+                  These terms may be updated as Mokvio evolves. Continued use of the hosted
                   service after an updated version becomes effective constitutes acceptance of the
                   updated terms, subject to applicable law.
                 </p>
@@ -169,8 +169,8 @@ export default function TermsPage() {
 
               <CardContent>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  These terms apply to the hosted MockForge service. They do not replace or modify
-                  the open-source license governing the MockForge source code.
+                  These terms apply to the hosted Mokvio service. They do not replace or modify
+                  the open-source license governing the Mokvio source code.
                 </p>
               </CardContent>
             </Card>

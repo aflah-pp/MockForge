@@ -25,9 +25,6 @@ def set_refresh_cookie(response, refresh_token):
     """
     Store a refresh token in an HttpOnly browser cookie.
 
-    The refresh token is intentionally excluded from the JSON
-    response body to reduce exposure to client-side JavaScript.
-
     Args:
         response: DRF Response instance.
         refresh_token: Serialized JWT refresh token.
@@ -73,15 +70,6 @@ def service_validation_error(exc):
     """
     Convert a Django ValidationError raised by the service layer
     into a DRF ValidationError.
-
-    This keeps HTTP-specific error formatting inside the API layer
-    while allowing services to remain independent of DRF.
-
-    Args:
-        exc: Django ValidationError instance.
-
-    Returns:
-        DRF ValidationError containing the original validation details.
     """
     if hasattr(exc, "message_dict"):
         return ValidationError(exc.message_dict)
@@ -102,13 +90,7 @@ def service_validation_error(exc):
 
 class RegisterView(APIView):
     """
-    Public endpoint for creating a new user account.
-
-    Request validation is performed by UserCreateSerializer.
-    Account creation and password handling are delegated to
-    AccountService.
-
-    Returns the newly created user's public account information.
+     endpoint for creating a new user account.
     """
 
     permission_classes = [permissions.AllowAny]
@@ -146,14 +128,8 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     """
-    Public endpoint for authenticating a user.
+     endpoint for authenticating a user.
 
-    Successful authentication returns:
-
-    - A short-lived JWT access token.
-    - The authenticated user's public account information.
-
-    The refresh token is stored exclusively in an HttpOnly cookie.
     """
 
     permission_classes = [permissions.AllowAny]
@@ -254,9 +230,6 @@ class RefreshTokenView(APIView):
 class LogoutView(APIView):
     """
     Logout the currently authenticated browser session.
-
-    The refresh token is obtained from the HttpOnly cookie,
-    blacklisted, and then removed from the browser.
     """
 
     permission_classes = [
@@ -389,8 +362,6 @@ class ChangePasswordView(APIView):
     """
     Change the authenticated user's password.
 
-    Password validation and session revocation are handled by
-    AccountService.
     """
 
     permission_classes = [
@@ -428,11 +399,7 @@ class ChangePasswordView(APIView):
 
 class VerifyEmailView(APIView):
     """
-    Verify the authenticated user's email address.
-
-    The current endpoint represents the final verification action.
-    Token generation and signed verification should be implemented
-    separately before exposing this endpoint in production.
+    Verify the authenticated user's email address.(Currently Not implemented actual verification method.)
     """
 
     permission_classes = [
@@ -459,9 +426,6 @@ class VerifyEmailView(APIView):
 class DeactivateAccountView(APIView):
     """
     Deactivate the authenticated user's account.
-
-    Deactivation preserves the user's database record and
-    application data while preventing normal authentication.
     """
 
     permission_classes = [

@@ -9,7 +9,7 @@ import Login from "@/features/auth/Login";
 import Register from "@/features/auth/Register";
 import MainDashBoardPage from "@/features/dashboard/MainDashBoardPage";
 import ProjectsList from "@/features/dashboard/ProjectsList";
-import ConnectMockForge from "@/features/docs/pages/api/connect-mockforge";
+import ConnectMokvio from "@/features/docs/pages/api/connect-mokvio";
 import DataGenerators from "@/features/docs/pages/build-doc/data-generators";
 import Fields from "@/features/docs/pages/build-doc/fields";
 import ProjectsResources from "@/features/docs/pages/build-doc/projects-resources";
@@ -53,7 +53,7 @@ function App() {
         <Route path="/docs/build/projects-resources" element={<ProjectsResources />} />
         <Route path="/docs/build/fields" element={<Fields />} />
         <Route path="/docs/build/data-generators" element={<DataGenerators />} />
-        <Route path="/docs/api/connect-mockforge" element={<ConnectMockForge />} />
+        <Route path="/docs/api/connect-mockvio" element={<ConnectMokvio />} />
         <Route path="/docs/reference/api" element={<ApiReference />} />
         <Route path="/docs/reference/generators" element={<GeneratorsReference />} />
         <Route path="/docs/roadmap" element={<Roadmap />} />

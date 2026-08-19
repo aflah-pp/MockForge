@@ -4,7 +4,7 @@ from typing import Any
 
 class BaseGenerator(ABC):
     """
-    Base contract for every MockForge generator.
+    Base contract for every Mokvio generator.
 
     A generator must provide a unique database key, declare the field
     data types it supports, validate its configuration options, and

@@ -1,6 +1,6 @@
-# MockForge Server
+# Mokvio Server
 
-Backend application for MockForge.
+Backend application for Mokvio.
 
 This Django project provides the REST API, authentication, project/resource/field management, data generators, dashboard data, and dynamically generated mock API responses. Product‑level details are in the root [README](../README.md); this file focuses on running and extending the backend.
 
@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 ## Environment Configuration
 
-MockForge uses environment variables for configuration. At minimum, configure:
+Mokvio uses environment variables for configuration. At minimum, configure:
 
 - `SECRET_KEY`
 - `DATABASE_URL`
@@ -113,7 +113,7 @@ MockForge uses environment variables for configuration. At minimum, configure:
 Example PostgreSQL URL:
 
 ```env
-DATABASE_URL=postgresql://username:password@localhost:5432/mockforge
+DATABASE_URL=postgresql://username:password@localhost:5432/moackvio
 ```
 
 Do not commit environment files or secrets.
@@ -122,7 +122,7 @@ Do not commit environment files or secrets.
 
 ## Database
 
-MockForge uses PostgreSQL as its primary database. It stores:
+Mokvio uses PostgreSQL as its primary database. It stores:
 
 - Users
 - Projects
@@ -221,7 +221,7 @@ Mock responses are generated from the resource definition and field generator co
 
 ## Authentication
 
-MockForge uses JWT authentication. Refresh tokens are handled via secure HttpOnly cookies according to the backend configuration.
+Mokvio uses JWT authentication. Refresh tokens are handled via secure HttpOnly cookies according to the backend configuration.
 
 Endpoints cover:
 
@@ -260,7 +260,7 @@ CI also runs the backend tests. Before merging backend changes, verify:
 
 ## Linting
 
-MockForge uses Ruff for linting and formatting.
+Mokvio uses Ruff for linting and formatting.
 
 Check:
 
@@ -357,4 +357,4 @@ When contributing:
 - Add tests for new business behavior.
 - Keep API behavior backwards‑compatible where possible.
 
-The goal is to keep the backend modular as MockForge grows into a larger API mocking platform.
+The goal is to keep the backend modular as Mokvio grows into a larger API mocking platform.

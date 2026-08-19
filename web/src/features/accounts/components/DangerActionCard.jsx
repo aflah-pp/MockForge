@@ -42,7 +42,7 @@ export default function DangerActionCard({ onConfirm, isSubmitting = false }) {
               <CardTitle>Deactivate Account</CardTitle>
 
               <CardDescription className="mt-1">
-                Temporarily disable your MockForge account.
+                Temporarily disable your Mokvio account.
               </CardDescription>
             </div>
           </div>

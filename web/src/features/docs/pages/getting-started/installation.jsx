@@ -5,16 +5,16 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # Installation
 
-There are currently two ways to use MockForge:
+There are currently two ways to use Mokvio:
 
-1. **Hosted MockForge**
-2. **Self-hosted MockForge**
+1. **Hosted Mokvio**
+2. **Self-hosted Mokvio**
 
 Choose the option that works for you.
 
-## Hosted MockForge
+## Hosted Mokvio
 
-If you are using the hosted version of MockForge, you don't need to install anything.
+If you are using the hosted version of Mokvio, you don't need to install anything.
 
 You don't need:
 
@@ -42,11 +42,11 @@ Publish
 Use Your Mock API
 \`\`\`
 
-This is the easiest way to use MockForge.
+This is the easiest way to use Mokvio.
 
-## Self-host MockForge
+## Self-host Mokvio
 
-If you want to run MockForge on your own machine, you can clone the project and run the frontend and backend yourself.
+If you want to run Mokvio on your own machine, you can clone the project and run the frontend and backend yourself.
 
 ### Requirements
 
@@ -58,23 +58,23 @@ You need:
 - npm
 - PostgreSQL
 
-You don't need to know Django or React to use MockForge.
+You don't need to know Django or React to use Mokvio.
 
 Those are the technologies used to build the platform.
 
-## 1. Clone MockForge
+## 1. Clone Mokvio
 
 Clone the repository:
 
 \`\`\`bash
 git clone <repository-url>
-cd MockForge
+cd Mokvio
 \`\`\`
 
 The project has two main parts:
 
 \`\`\`text
-MockForge
+Mokvio
 ├── server
 └── web
 \`\`\`
@@ -121,7 +121,7 @@ pip install -r requirements.txt
 
 ## 4. Configure the backend
 
-MockForge uses environment variables for its configuration.
+Mokvio uses environment variables for its configuration.
 
 Set up your local environment according to the project's environment configuration.
 
@@ -136,7 +136,7 @@ CORS_ALLOWED_ORIGINS
 For PostgreSQL, your database URL will look similar to:
 
 \`\`\`text
-DATABASE_URL=postgresql://username:password@localhost:5432/mockforge
+DATABASE_URL=postgresql://username:password@localhost:5432/mockvio
 \`\`\`
 
 Use your own PostgreSQL username, password, host, port, and database name.
@@ -145,17 +145,17 @@ Do not commit your environment file or secrets to Git.
 
 ## 5. Create the PostgreSQL database
 
-Create a PostgreSQL database for MockForge.
+Create a PostgreSQL database for Mokvio.
 
 For example:
 
 \`\`\`text
-mockforge
+mockvio
 \`\`\`
 
 Then point \`DATABASE_URL\` to that database.
 
-MockForge stores things such as:
+Mokvio stores things such as:
 
 - Users
 - Projects
@@ -195,7 +195,7 @@ Keep this terminal running.
 
 Open another terminal.
 
-From the MockForge project directory:
+From the Mokvio project directory:
 
 \`\`\`bash
 cd web
@@ -227,7 +227,7 @@ Open that address in your browser.
 
 Once the frontend and backend are running:
 
-1. Open MockForge.
+1. Open Mokvio.
 2. Create an account.
 3. Sign in.
 4. Create a project.
@@ -237,7 +237,7 @@ Once the frontend and backend are running:
 8. Publish the resource.
 9. Open the generated API URL.
 
-If the endpoint returns JSON data, your MockForge installation is working.
+If the endpoint returns JSON data, your Mokvio installation is working.
 
 ## Hosted vs Self-hosted
 
@@ -250,23 +250,23 @@ You only need:
 \`\`\`text
 Browser
    ↓
-MockForge
+Mokvio
 \`\`\`
 
 You don't have to manage the server or database yourself.
 
 ### Self-hosted
 
-Use self-hosting if you want to run MockForge on your own machine or infrastructure.
+Use self-hosting if you want to run Mokvio on your own machine or infrastructure.
 
 The setup is:
 
 \`\`\`text
 Browser
    ↓
-MockForge Frontend
+Mokvio Frontend
    ↓
-MockForge Backend
+Mokvio Backend
    ↓
 PostgreSQL
 \`\`\`
@@ -275,7 +275,7 @@ You are responsible for running and maintaining these services.
 
 ## Docker
 
-Docker support is **not available yet** in the current version of MockForge.
+Docker support is **not available yet** in the current version of Mokvio.
 
 The current self-hosted setup runs directly using:
 
@@ -289,7 +289,7 @@ Docker support can be added in a future release.
 
 No.
 
-You don't need a MockForge npm package.
+You don't need a Mokvio npm package.
 
 Once you have a mock API URL, you can use it like any other API.
 
@@ -302,7 +302,7 @@ For example:
 
 ## Next step
 
-If MockForge is running, continue with **Quick Start**.
+If Mokvio is running, continue with **Quick Start**.
 
 You will create your first mock API in a few minutes.
 `;

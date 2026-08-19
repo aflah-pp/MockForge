@@ -22,7 +22,7 @@ Generator:
 person.full_name
 \`\`\`
 
-MockForge generates the value when the mock API is requested.
+Mokvio generates the value when the mock API is requested.
 
 ## Generator format
 

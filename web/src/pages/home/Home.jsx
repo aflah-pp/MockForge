@@ -30,7 +30,7 @@ const endpoints = [
     name: "projects",
     response: `{
   "id": 7,
-  "name": "MockForge",
+  "name": "Mokvio",
   "status": "active",
   "members": 12
 }`,
@@ -69,11 +69,11 @@ export default function Home() {
           <div className="flex h-14 items-center justify-between px-3 sm:px-4">
             <Link to="/" onClick={closeMenu} className="group flex items-center gap-2.5">
               <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-black/5">
-                <img src={ApiLogo} alt="MockForge" className="size-full object-contain p-1" />
+                <img src={ApiLogo} alt="Mokvio" className="size-full object-contain p-1" />
               </div>
 
               <div className="flex flex-col leading-none">
-                <span className="font-heading text-sm font-bold tracking-tight">MockForge</span>
+                <span className="font-heading text-sm font-bold tracking-tight">Mokvio</span>
 
                 <span className="mt-1 font-mono text-[7px] uppercase tracking-[0.2em] text-muted-foreground">
                   API infrastructure
@@ -181,7 +181,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Design resources, define fields, and instantly get realistic JSON APIs. MockForge
+              Design resources, define fields, and instantly get realistic JSON APIs. Mokvio
               gives your frontend a production-ready contract before the real backend exists.
             </p>
 
@@ -239,7 +239,7 @@ export default function Home() {
                     <span className="size-2 rounded-full bg-green-400/70" />
                   </div>
 
-                  <span className="ml-2 font-mono text-[9px] text-white/30">mockforge / api</span>
+                  <span className="ml-2 font-mono text-[9px] text-white/30">mockvio / api</span>
                 </div>
 
                 <div className="flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.16em] text-emerald-400">
@@ -341,7 +341,7 @@ export default function Home() {
             icon={Database}
             number="02"
             title="Schema Driven"
-            text="Define resources and fields once. MockForge handles the response structure."
+            text="Define resources and fields once. Mokvio handles the response structure."
           />
 
           <Feature
@@ -361,7 +361,7 @@ export default function Home() {
 
           <div>
             <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-foreground">
-              MockForge
+              Mokvio
             </div>
 
             <div className="mt-1 text-[10px]">Open source API infrastructure.</div>
@@ -376,7 +376,7 @@ export default function Home() {
           <span className="text-border">/</span>
 
           <a
-            href="https://github.com/aflah-pp/MockForge"
+            href="https://github.com/aflah-pp/Mokvio"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 transition-colors hover:text-foreground"
@@ -414,7 +414,7 @@ function Feature({ icon: Icon, number, title, text }) {
 
       <div className="mt-6 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground/40 transition-colors group-hover:text-[#F7931A]/70">
         <span className="size-1 rounded-full bg-current" />
-        MockForge capability
+        Mokvio capability
       </div>
     </div>
   );

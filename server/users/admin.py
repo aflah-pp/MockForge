@@ -6,13 +6,8 @@ from .models import User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     """
-    Administrative interface for the MockForge user model.
+    Administrative interface for the Mokvio user model.
 
-    Exposes only the fields required for account management,
-    verification, activation, and basic user identification.
-
-    Password hashes and internal authentication fields are not
-    exposed through the general user form.
     """
 
     list_display = (

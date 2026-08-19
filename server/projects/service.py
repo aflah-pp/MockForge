@@ -13,21 +13,7 @@ logger = logging.getLogger(__name__)
 
 class ProjectService:
     """
-    Service layer for MockForge project business logic.
-
-    Responsibilities include:
-
-    - retrieving active projects owned by a user
-    - retrieving a specific active project owned by a user
-    - validating project slugs
-    - creating projects
-    - renaming projects and regenerating their slugs
-    - publishing projects
-    - unpublishing projects
-    - soft-deleting projects
-    - restoring soft-deleted projects
-
-    Project management is private and owner-scoped.
+    Service layer for Mokvio project business logic.
     """
 
     @staticmethod
@@ -72,11 +58,6 @@ class ProjectService:
         Validate and normalize a project slug.
 
         The resulting slug must be unique for the specified owner.
-
-        Soft-deleted projects are included in the uniqueness check
-        because the database constraint currently requires the
-        owner and slug combination to remain unique across all
-        project records.
 
         Args:
             user:
@@ -138,13 +119,6 @@ class ProjectService:
         The project slug is automatically generated from the
         project name.
 
-        New projects are:
-
-        - active
-        - unpublished
-        - owned by the authenticated user
-
-        The creating user is recorded through AuditMixin.created_by.
         """
 
         name = data.get(
@@ -168,7 +142,7 @@ class ProjectService:
             owner=user,
             name=name,
             slug=slug,
-            is_published=False,
+            is_published=True,
             created_by=user,
         )
 
@@ -193,8 +167,6 @@ class ProjectService:
 
         The new slug is derived from the supplied project name and
         must remain unique for the project owner.
-
-        The project owner is recorded as updated_by.
 
         A soft-deleted project cannot be renamed.
         """
@@ -255,9 +227,6 @@ class ProjectService:
         """
         Publish an active project.
 
-        Publication enables the project's generated mock API to
-        become eligible for public runtime access.
-
         A soft-deleted project cannot be published.
         """
 
@@ -298,10 +267,6 @@ class ProjectService:
     ):
         """
         Unpublish an active project.
-
-        Unpublishing prevents the project's generated mock API
-        from being publicly served by the runtime layer.
-
         A soft-deleted project cannot be unpublished.
         """
 
@@ -342,10 +307,6 @@ class ProjectService:
     ):
         """
         Toggle the publication state of an active project.
-
-        This method is useful for a dedicated publish/unpublish
-        endpoint when the frontend only needs a single toggle action.
-
         A soft-deleted project cannot change publication state.
 
         The user performing the action is recorded as updated_by.
@@ -389,18 +350,8 @@ class ProjectService:
 
         The project record remains in the database.
 
-        Deletion performs the following operations:
-
-        - sets deleted_at
-        - records deleted_by
-        - disables publication
-        - records the modification timestamp
-
         Soft-deleted projects are excluded from normal project
         queries and cannot be used by the public mock runtime.
-
-        Calling this method on an already deleted project is
-        idempotent.
         """
 
         if project.deleted_at is not None:
@@ -438,12 +389,8 @@ class ProjectService:
         """
         Restore a previously soft-deleted project.
 
-        The original project record and slug are preserved.
-
         Restored projects are always unpublished. Publication must
         be explicitly enabled again after restoration.
-
-        The restoring user is recorded as updated_by.
 
         Raises:
             ValidationError:

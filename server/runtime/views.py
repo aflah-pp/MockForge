@@ -54,12 +54,10 @@ class RuntimeAPIView(APIView):
         if not project.is_published:
             raise Http404("Project not published.")
 
-        resource = self._get_resource(
+        return self._get_resource(
             project=project,
             resource_slug=resource_slug,
         )
-
-        return resource
 
     def get(self, request, project_slug, resource_slug):
         query_serializer = RuntimeQuerySerializer(
@@ -144,12 +142,13 @@ class RuntimeAPIView(APIView):
         )
 
     def delete(self, request, project_slug, resource_slug):
-
         record_id = request.query_params.get("id")
+
         resource = self._get_published_resource(
             project_slug=project_slug,
             resource_slug=resource_slug,
         )
+
         if record_id:
             return Response(
                 {

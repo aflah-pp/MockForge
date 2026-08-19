@@ -40,7 +40,7 @@ export const navigation = [
     items: [
       {
         title: "Example to connect api",
-        url: "/docs/api/connect-mockforge",
+        url: "/docs/api/connect-mokvio",
       },
     ],
   },

@@ -5,13 +5,13 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # API Reference
 
-This page describes the MockForge API currently available in V1.
+This page describes the Mokvio API currently available in V1.
 
-MockForge provides API endpoints for managing your account, projects, resources, fields, and generated mock data.
+Mokvio provides API endpoints for managing your account, projects, resources, fields, and generated mock data.
 
 ## Base URL
 
-When running MockForge locally:
+When running Mokvio locally:
 
 \`\`\`text
 http://127.0.0.1:8000
@@ -23,17 +23,17 @@ The API is available under:
 /api/v1/
 \`\`\`
 
-If you are using a hosted MockForge instance, replace the local URL with your hosted API URL.
+If you are using a hosted Mokvio instance, replace the local URL with your hosted API URL.
 
 ## Authentication
 
 Most management endpoints require authentication.
 
-MockForge uses JWT authentication.
+Mokvio uses JWT authentication.
 
 After signing in, the application uses the authenticated session when making requests.
 
-Public mock API endpoints are intended to be consumed by your frontend application without exposing your MockForge management credentials.
+Public mock API endpoints are intended to be consumed by your frontend application without exposing your Mokvio management credentials.
 
 ## Main API areas
 
@@ -104,7 +104,7 @@ Fields also contain the configuration that determines how their values are gener
 
 ### Generators
 
-MockForge exposes the available generator definitions through:
+Mokvio exposes the available generator definitions through:
 
 \`\`\`text
 GET /api/v1/generators/
@@ -124,7 +124,7 @@ For example:
 
 ### Mock API
 
-After creating and publishing a resource, MockForge provides a mock endpoint that can be called by your application.
+After creating and publishing a resource, Mokvio provides a mock endpoint that can be called by your application.
 
 A typical endpoint follows the project and resource structure.
 

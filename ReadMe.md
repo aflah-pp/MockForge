@@ -1,8 +1,8 @@
-# MockForge
+# Mokvio
 
 **Open‑source mock API infrastructure for building and testing applications before the real backend is ready.**
 
-MockForge lets you define projects, resources, fields, and data generators through a web dashboard and exposes generated mock REST endpoints that return realistic JSON data.
+Mokvio lets you define projects, resources, fields, and data generators through a web dashboard and exposes generated mock REST endpoints that return realistic JSON data.
 
 It’s a real working application, not a demo or static mockup. V1 focuses on getting the core mock API workflow reliable before adding more advanced behavior.
 
@@ -11,13 +11,13 @@ It’s a real working application, not a demo or static mockup. V1 focuses on ge
 ## Quick Links
 
 - **Hosted App:** <https://mock-forge.netlify.app/>
-- **Repository:** <https://github.com/aflah-pp/MockForge>
+- **Repository:** <https://github.com/aflah-pp/Mokvio>
 - **Documentation:** <https://mock-forge.netlify.app/docs>
 - **License:** [LICENSE](LICENSE)
 
 ---
 
-## Why MockForge?
+## Why Mokvio?
 
 Frontend development shouldn’t wait for backend development.
 
@@ -27,29 +27,29 @@ Typical workflow without a mock API:
 - Backend isn’t ready
 - Frontend work stalls
 
-With MockForge:
+With Mokvio:
 
-- Frontend → MockForge → Generated JSON
+- Frontend → Mokvio → Generated JSON
 
 You can create a mock API, connect it to your application, and start building UI, forms, loading states, empty states, error states, and other frontend functionality before the real backend exists.
 
-The idea is simple: define the shape of the data once and let MockForge generate the response.
+The idea is simple: define the shape of the data once and let Mokvio generate the response.
 
 ---
 
 ## Live Demo
 
-A hosted version of MockForge is available so you can try the current V1 without setting up Python, Node.js, PostgreSQL, etc.
+A hosted version of Mokvio is available so you can try the current V1 without setting up Python, Node.js, PostgreSQL, etc.
 
 - **Web application:** <https://mock-forge.netlify.app/>
 
-The hosted app uses the current production deployment of the MockForge frontend and backend. It’s part of an actively developed project, so behavior and features can change between releases.
+The hosted app uses the current production deployment of the Mokvio frontend and backend. It’s part of an actively developed project, so behavior and features can change between releases.
 
 ---
 
-## What MockForge Actually Does
+## What Mokvio Actually Does
 
-MockForge doesn’t create a traditional database full of fake records for every mock request.
+Mokvio doesn’t create a traditional database full of fake records for every mock request.
 
 Instead, you define an API schema:
 
@@ -69,7 +69,7 @@ Ecommerce
     └── image
 ```
 
-When a mock endpoint is hit, MockForge uses that configuration to generate the response dynamically:
+When a mock endpoint is hit, Mokvio uses that configuration to generate the response dynamically:
 
 ```text
 HTTP Request
@@ -115,7 +115,7 @@ Once published, the generated endpoint can be consumed by any application that c
 
 ### Authentication
 
-MockForge provides authentication for the dashboard and management API (separate from auth in apps consuming mock endpoints).
+Mokvio provides authentication for the dashboard and management API (separate from auth in apps consuming mock endpoints).
 
 - Registration & login
 - JWT authentication
@@ -184,7 +184,7 @@ Fields can be connected to supported data generators.
 
 ### Data Generators
 
-Generators determine how MockForge creates values.
+Generators determine how Mokvio creates values.
 
 Examples:
 
@@ -262,7 +262,7 @@ Generators are registered through the backend generator registry and exposed to 
 
 ## Dynamic Mock API
 
-After configuring and publishing a resource, MockForge exposes it through a generated mock API endpoint.
+After configuring and publishing a resource, Mokvio exposes it through a generated mock API endpoint.
 
 A typical endpoint follows the project and resource structure:
 
@@ -290,7 +290,7 @@ Generated values are not permanent database records. They are created from the r
 
 ## Dashboard
 
-The MockForge dashboard is where you manage projects and mock APIs.
+The Mokvio dashboard is where you manage projects and mock APIs.
 
 It includes:
 
@@ -348,7 +348,7 @@ The database stores application and API configuration data:
 ## Project Structure
 
 ```text
-MockForge
+Mokvio
 ├── server
 │   ├── config
 │   ├── users
@@ -424,7 +424,7 @@ GET /api/v1/ecommerce/products
 
 The response is generated from the configured fields and generators.
 
-MockForge is currently best suited for:
+Mokvio is currently best suited for:
 
 - Frontend development
 - UI prototyping
@@ -439,7 +439,7 @@ It is not intended to replace a production backend.
 
 ## Self‑Hosted Development
 
-MockForge can be run locally without Docker.
+Mokvio can be run locally without Docker.
 
 ### Requirements
 
@@ -464,7 +464,7 @@ Docker support is not currently part of the project. This is a current limitatio
 
 ## Hosted Usage
 
-The hosted version allows you to use MockForge without setting up the local development environment.
+The hosted version allows you to use Mokvio without setting up the local development environment.
 
 - **Hosted application:** <https://mock-forge.netlify.app/>
 
@@ -479,7 +479,7 @@ Workflow:
 
 ### Hosted Version Limitations
 
-The hosted deployment is primarily for trying and using the current project. Because MockForge is still actively developed:
+The hosted deployment is primarily for trying and using the current project. Because Mokvio is still actively developed:
 
 - Availability depends on current hosting infrastructure
 - Response times may vary
@@ -493,9 +493,9 @@ If you need complete control over the environment, self‑hosting is the better 
 
 ---
 
-## Using MockForge With Frontend Applications
+## Using Mokvio With Frontend Applications
 
-MockForge is HTTP‑based, so you don’t need a special SDK.
+Mokvio is HTTP‑based, so you don’t need a special SDK.
 
 You can use:
 
@@ -510,7 +510,7 @@ You can use:
 Example:
 
 ```js
-const response = await fetch("https://your-mockforge-url/api/ecommerce/products");
+const response = await fetch("https://your-mokvio-url/api/ecommerce/products");
 const products = await response.json();
 ```
 
@@ -518,9 +518,9 @@ The generated API is intended to be consumed like any other HTTP endpoint.
 
 ---
 
-## What MockForge Is Not
+## What Mokvio Is Not
 
-MockForge is not intended to be:
+Mokvio is not intended to be:
 
 - A replacement for Django
 - A replacement for a production backend
@@ -576,7 +576,7 @@ Planned for future versions:
 
 ## Roadmap
 
-MockForge is being developed continuously.
+Mokvio is being developed continuously.
 
 ### Full REST Method Support
 
@@ -587,7 +587,7 @@ Expand beyond GET endpoints with:
 - PATCH
 - DELETE
 
-This will allow MockForge to simulate more complete CRUD workflows.
+This will allow Mokvio to simulate more complete CRUD workflows.
 
 ### Pagination
 
@@ -661,7 +661,7 @@ The project documentation covers:
   - Fields
   - Data Generators
 - **Use Your API**
-  - Connecting MockForge APIs
+  - Connecting Mokvio APIs
 - **API Reference**
   - API Reference
   - Generators
@@ -674,7 +674,7 @@ Documentation is developed alongside the application and may change as the API e
 
 ## Open Source
 
-MockForge is an open‑source project.
+Mokvio is an open‑source project.
 
 Goal: build a practical mock API platform that developers can use while working on:
 
@@ -712,7 +712,7 @@ Please do not include passwords, API keys, JWTs, cookies, or other secrets in is
 
 Feedback is welcome.
 
-If you find a bug, have a feature request, find something confusing, or simply have an idea for improving MockForge, please open an issue in the repository.
+If you find a bug, have a feature request, find something confusing, or simply have an idea for improving Mokvio, please open an issue in the repository.
 
 The hosted application may also provide feedback functionality as the project evolves.
 
@@ -720,20 +720,20 @@ The hosted application may also provide feedback functionality as the project ev
 
 ## Releases
 
-MockForge uses versioned releases as the project develops.
+Mokvio uses versioned releases as the project develops.
 
 - The V1 release represents the first focused version of the platform.
 - It does not mean that the API surface or architecture is considered final.
 - Future releases may introduce new API methods, configuration options, generator types, and deployment capabilities.
 
 Check the repository releases for the latest version and changes:  
-<https://github.com/aflah-pp/MockForge/releases>
+<https://github.com/aflah-pp/Mokvio/releases>
 
 ---
 
 ## Status
 
-MockForge is actively developed.
+Mokvio is actively developed.
 
 - The V1 platform is usable.
 - The project is not positioned as a finished enterprise product.
@@ -752,7 +752,7 @@ Current development focus:
 
 ## Built for Developers
 
-MockForge exists for a simple reason:
+Mokvio exists for a simple reason:
 
 - Don’t wait for the backend.
 - Build the frontend.

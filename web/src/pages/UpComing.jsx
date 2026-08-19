@@ -110,11 +110,11 @@ export default function Upcoming() {
           <div className="flex h-14 items-center justify-between px-3 sm:px-4">
             <Link to="/" onClick={closeMenu} className="group flex items-center gap-2.5">
               <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-black/5">
-                <img src={ApiLogo} alt="MockForge" className="size-full object-contain p-1" />
+                <img src={ApiLogo} alt="Mokvio" className="size-full object-contain p-1" />
               </div>
 
               <div className="flex flex-col leading-none">
-                <span className="font-heading text-sm font-bold tracking-tight">MockForge</span>
+                <span className="font-heading text-sm font-bold tracking-tight">Mokvio</span>
 
                 <span className="mt-1 font-mono text-[7px] uppercase tracking-[0.2em] text-muted-foreground">
                   API infrastructure
@@ -287,7 +287,7 @@ export default function Upcoming() {
               </div>
 
               <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-                Shape the future of MockForge
+                Shape the future of Mokvio
               </h2>
 
               <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground sm:text-base">
@@ -302,7 +302,7 @@ export default function Upcoming() {
                   className="group h-11 rounded-lg bg-[#F7931A] px-5 font-medium text-black shadow-[0_8px_30px_-10px_rgba(247,147,26,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#ff9f1f] hover:shadow-[0_12px_35px_-10px_rgba(247,147,26,0.85)]"
                 >
                   <a
-                    href="https://github.com/aflah-pp/MockForge"
+                    href="https://github.com/aflah-pp/Mokvio"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-center gap-2"
@@ -326,7 +326,7 @@ export default function Upcoming() {
 
           <div>
             <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-foreground">
-              MockForge
+              Mokvio
             </div>
 
             <div className="mt-1 text-[10px]">Open source API infrastructure.</div>
@@ -341,7 +341,7 @@ export default function Upcoming() {
           <span className="text-border">/</span>
 
           <a
-            href="https://github.com/aflah-pp/MockForge"
+            href="https://github.com/aflah-pp/Mokvio"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 transition-colors hover:text-foreground"

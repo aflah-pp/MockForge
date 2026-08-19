@@ -1,6 +1,6 @@
-# MockForge Web
+# Mokvio Web
 
-Frontend application for the MockForge dashboard and documentation.
+Frontend application for the Mokvio dashboard and documentation.
 
 This is a React + Vite app that lets you create projects, resources, and fields, configure data generators, and work with generated mock API endpoints. It does not re‑document every feature; see the root [README](../README.md) for the full product overview.
 
@@ -25,7 +25,7 @@ This is a React + Vite app that lets you create projects, resources, and fields,
 
 - Node.js 20+
 - npm 10+
-- MockForge backend running locally
+- Mokvio backend running locally
 
 Check versions:
 
@@ -128,7 +128,7 @@ Open that in your browser. The frontend talks to the Django REST API via Axios, 
   Configure field name, type, generator, and generator options for each resource.
 
 - **Documentation**  
-  The app also hosts the MockForge docs (Introduction, Quick Start, Projects & Resources, Fields, Generators, API usage, API reference, Roadmap).
+  The app also hosts the Mokvio docs (Introduction, Quick Start, Projects & Resources, Fields, Generators, API usage, API reference, Roadmap).
 
 ---
 
@@ -211,7 +211,7 @@ npm install
 npm run build
 ```
 
-Deploy the `dist/` directory to your static hosting provider. In production, the frontend must point to the deployed MockForge API via environment configuration (e.g. `VITE_API_BASE_URL` set to the production API base).
+Deploy the `dist/` directory to your static hosting provider. In production, the frontend must point to the deployed Mokvio API via environment configuration (e.g. `VITE_API_BASE_URL` set to the production API base).
 
 Important:
 
@@ -232,4 +232,4 @@ Before opening a pull request for the frontend:
 - Check responsive behavior on different screen sizes.
 - Review the changed files before committing.
 
-MockForge is actively developed, so frontend structure and behavior may evolve as new platform features are added.
+Mokvio is actively developed, so frontend structure and behavior may evolve as new platform features are added.

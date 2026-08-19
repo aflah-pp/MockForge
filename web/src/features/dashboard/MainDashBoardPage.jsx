@@ -170,7 +170,7 @@ function MainDashBoardPage() {
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Dashboard</h1>
 
               <p className="mt-1 text-sm text-muted-foreground sm:text-base">
-                Welcome back, {user.username}. Here's what's happening with your MockForge projects.
+                Welcome back, {user.username}. Here's what's happening with your Mokvio projects.
               </p>
             </div>
 
@@ -231,7 +231,7 @@ function MainDashBoardPage() {
                     <p className="font-medium">No projects yet</p>
 
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Create your first MockForge project to get started.
+                      Create your first Mokvio project to get started.
                     </p>
 
                     <Link to="/project/create">
@@ -398,7 +398,7 @@ function MainDashBoardPage() {
               <CardHeader>
                 <CardTitle>Schema Size</CardTitle>
 
-                <CardDescription>Total fields defined in MockForge.</CardDescription>
+                <CardDescription>Total fields defined in Mokvio.</CardDescription>
               </CardHeader>
 
               <CardContent>

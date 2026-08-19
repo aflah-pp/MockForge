@@ -5,7 +5,7 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # Projects & Resources
 
-MockForge uses **projects** and **resources** to organize your mock API.
+Mokvio uses **projects** and **resources** to organize your mock API.
 
 The basic structure is:
 
@@ -21,7 +21,7 @@ Mock API
 
 ## Create a project
 
-Open the MockForge dashboard and create a new project.
+Open the Mokvio dashboard and create a new project.
 
 For example:
 
@@ -110,7 +110,7 @@ Resource:
 Product
 \`\`\`
 
-After adding fields and publishing the resource, MockForge provides a mock API endpoint for that resource.
+After adding fields and publishing the resource, Mokvio provides a mock API endpoint for that resource.
 
 You can then use that endpoint from your frontend application.
 

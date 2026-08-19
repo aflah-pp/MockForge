@@ -73,7 +73,7 @@ export default function FeedbackForm({ feedbackTypes }) {
           <h2 className="mt-5 text-xl font-bold tracking-tight">Feedback received.</h2>
 
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-            Thanks for helping improve MockForge. Your feedback has been recorded and will be
+            Thanks for helping improve Mokvio. Your feedback has been recorded and will be
             reviewed.
           </p>
 

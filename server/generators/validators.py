@@ -15,7 +15,7 @@ def validate_generator_configuration(
     options: dict[str, Any],
 ) -> None:
     """
-    Validate a complete MockForge generator configuration.
+    Validate a complete Mokvio generator configuration.
 
     Validation includes:
 

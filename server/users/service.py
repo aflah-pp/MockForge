@@ -19,12 +19,7 @@ logger = logging.getLogger(__name__)
 
 class JWTService:
     """
-    Provides JWT session-management operations for MockForge.
-
-    This service is responsible for creating refresh/access token pairs
-    and revoking refresh tokens. HTTP cookie handling remains in the
-    view layer so that authentication transport concerns are separated
-    from token-management business logic.
+    Provides JWT session-management operations for Mokvio.
     """
 
     @staticmethod
@@ -87,17 +82,7 @@ class JWTService:
 
 class AccountService:
     """
-    Contains business logic for MockForge user accounts.
-
-    The service layer owns account rules such as:
-
-    - registration
-    - authentication
-    - profile updates
-    - password changes
-    - email verification state
-    - account deactivation
-    - session revocation
+    Contains business logic for Mokvio user accounts.
 
     """
 
@@ -113,7 +98,7 @@ class AccountService:
         avatar=None,
     ):
         """
-        Register a new MockForge user account.
+        Register a new Mokvio user account.
         """
         username = username.strip()
         email = email.strip().lower()
@@ -191,13 +176,6 @@ class AccountService:
         """
         Authenticate a user using username and password.
 
-        Returns:
-            tuple:
-                The authenticated User instance and a JWT token pair.
-
-        Raises:
-            ValidationError: If the account does not exist, is inactive,
-            or the supplied credentials are invalid.
         """
         username = username.strip()
 
@@ -258,7 +236,6 @@ class AccountService:
         """
         Revoke the refresh token belonging to the current session.
 
-        Cookie removal is intentionally handled by the HTTP view.
         """
         JWTService.blacklist_refresh_token(
             refresh_token,
@@ -278,8 +255,6 @@ class AccountService:
         """
         Revoke every outstanding refresh token belonging to a user.
 
-        Used when the user explicitly chooses to terminate all active
-        sessions.
         """
         JWTService.blacklist_all_user_tokens(
             user,
@@ -306,11 +281,6 @@ class AccountService:
         """
         Update editable account and profile information.
 
-        Username and email are normalized and checked for uniqueness.
-        Changing the email address resets email verification because
-        the new address must be verified separately.
-
-        Only fields explicitly provided by the caller are modified.
         """
         update_fields = []
 
@@ -406,11 +376,6 @@ class AccountService:
         """
         Change a user's password after validating the current password.
 
-        The new password must differ from the current password and pass
-        Django's configured password validators.
-
-        All existing refresh-token sessions are revoked after a
-        successful password change.
         """
         if not user.check_password(old_password):
             raise ValidationError(
@@ -490,9 +455,6 @@ class AccountService:
         """
         Deactivate a user's account without deleting the database record.
 
-        All outstanding refresh tokens are revoked so the deactivated
-        account cannot continue authenticated sessions through refresh
-        tokens.
         """
         if not user.is_active:
             return user

@@ -434,7 +434,7 @@ class RuntimeWorkflowReportTestCase(TestCase):
             )
 
         report = {
-            "report": "MockForge Runtime Workflow",
+            "report": "Mokvio Runtime Workflow",
             "version": "1.0",
             "status": "PASS",
             "workflow": {

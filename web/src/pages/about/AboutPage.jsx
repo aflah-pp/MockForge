@@ -22,14 +22,14 @@ const steps = [
     label: "Define Fields",
     short: "Describe your data.",
     description:
-      "Add fields, choose their data types, and configure how MockForge should generate their values.",
+      "Add fields, choose their data types, and configure how Mokvio should generate their values.",
   },
   {
     icon: Code2,
     label: "Use the API",
     short: "Your endpoint is ready.",
     description:
-      "MockForge interprets your configuration and exposes structured JSON responses through your mock API.",
+      "Mokvio interprets your configuration and exposes structured JSON responses through your mock API.",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function AboutPage() {
                   </div>
 
                   <div>
-                    <h1 className="text-xl font-bold tracking-tight">MockForge</h1>
+                    <h1 className="text-xl font-bold tracking-tight">Mokvio</h1>
 
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                       Mock API infrastructure
@@ -65,13 +65,13 @@ export default function AboutPage() {
 
                 <div className="mt-5 max-w-xl space-y-3 text-sm leading-relaxed text-muted-foreground">
                   <p>
-                    MockForge is a configuration-driven mock API platform designed to make frontend
+                    Mokvio is a configuration-driven mock API platform designed to make frontend
                     development and API prototyping faster.
                   </p>
 
                   <p>
                     Instead of writing temporary backend code, you define your project, resources,
-                    and fields. MockForge turns that configuration into structured mock API
+                    and fields. Mokvio turns that configuration into structured mock API
                     responses your frontend can work with immediately.
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export default function AboutPage() {
             </div>
 
             <div className="flex items-center justify-between border-t px-6 py-3 text-[10px] text-muted-foreground/60 sm:px-8">
-              <span>MockForge · Developer tooling</span>
+              <span>Mokvio · Developer tooling</span>
 
               <span className="font-mono tracking-wider">/about</span>
             </div>

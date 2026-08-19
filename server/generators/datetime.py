@@ -22,7 +22,10 @@ def parse_date_value(value, default_relative=None):
             if default_relative is not None:
                 return value
 
-    raise ValueError(f"Invalid date value: {value!r}. " "Use YYYY-MM-DD or a supported relative value.")
+    raise ValueError(
+        f"Invalid date value: {value!r}. "
+        "Use YYYY-MM-DD or a supported relative value."
+    )
 
 
 def parse_datetime_value(value, default_relative=None):
@@ -39,7 +42,10 @@ def parse_datetime_value(value, default_relative=None):
             if default_relative is not None:
                 return value
 
-    raise ValueError(f"Invalid datetime value: {value!r}. " "Use ISO datetime format or a supported relative value.")
+    raise ValueError(
+        f"Invalid datetime value: {value!r}. "
+        "Use ISO datetime format or a supported relative value."
+    )
 
 
 @register

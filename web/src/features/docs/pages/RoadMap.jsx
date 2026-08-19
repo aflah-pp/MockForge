@@ -5,7 +5,7 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # What's Coming
 
-MockForge V1 is intentionally small.
+Mokvio V1 is intentionally small.
 
 The goal is to make creating a useful mock API as simple as possible before adding more advanced features.
 
@@ -38,7 +38,7 @@ Support for:
 - PATCH
 - DELETE
 
-This would allow MockForge to behave more like a complete temporary backend.
+This would allow Mokvio to behave more like a complete temporary backend.
 
 ### Pagination
 
@@ -88,11 +88,11 @@ Move beyond file URLs and support generated files such as PDFs and other downloa
 
 ### CLI
 
-A command-line interface may be introduced for developers who prefer working with MockForge directly from their terminal.
+A command-line interface may be introduced for developers who prefer working with Mokvio directly from their terminal.
 
 ## Open Source
 
-MockForge is an open-source project.
+Mokvio is an open-source project.
 
 The roadmap is expected to evolve based on:
 
@@ -105,7 +105,7 @@ Features listed here are planned or considered ideas, not guaranteed release com
 
 ## Have an idea?
 
-If there is a feature you would like to see in MockForge, open an issue or start a discussion in the project's GitHub repository.
+If there is a feature you would like to see in Mokvio, open an issue or start a discussion in the project's GitHub repository.
 
 The best roadmap is one shaped by the developers actually using the tool.
 `;

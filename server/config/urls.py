@@ -5,9 +5,9 @@ from django.urls import include, path
 
 from .views import server_status
 
-admin.site.site_header = "MockForge Administration"
+admin.site.site_header = "Mokvio Administration"
 admin.site.index_title = "Admin Services"
-admin.site.site_title = "MockForge"
+admin.site.site_title = "Mokvio"
 
 
 urlpatterns = [

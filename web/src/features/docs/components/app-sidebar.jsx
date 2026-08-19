@@ -52,12 +52,12 @@ export function AppSidebar({ ...props }) {
       <SidebarHeader>
         <div className="flex items-center gap-3 px-2 py-2">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background shadow-sm">
-            <img src={ApiLogo} alt="MockForge" className="size-6 object-contain" />
+            <img src={ApiLogo} alt="Mokvio" className="size-6 object-contain" />
           </div>
 
           <div className="flex min-w-0 flex-col leading-tight">
-            <span className="truncate text-sm font-semibold tracking-tight">MockForge</span>
-            <span className="truncate text-xs text-muted-foreground">Documentation - V1.0</span>
+            <span className="truncate text-sm font-semibold tracking-tight">Mokvio</span>
+            <span className="truncate text-xs text-muted-foreground">Documentation</span>
           </div>
         </div>
 

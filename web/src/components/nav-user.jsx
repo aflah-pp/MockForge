@@ -122,14 +122,14 @@ export function NavUser({ user, onLogout, onLogoutAll }) {
               <DropdownMenuSeparator />
 
               <div className="px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                MockForge
+                Mokvio
               </div>
 
               <DropdownMenuGroup>
                 <Link to="/about">
                   <DropdownMenuItem>
                     <Code2 />
-                    About MockForge
+                    About Mokvio
                   </DropdownMenuItem>
                 </Link>
               </DropdownMenuGroup>
@@ -151,7 +151,7 @@ export function NavUser({ user, onLogout, onLogoutAll }) {
       <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Log out of MockForge?</AlertDialogTitle>
+            <AlertDialogTitle>Log out of Mokvio?</AlertDialogTitle>
             <AlertDialogDescription>
               Choose how you want to end your session. Logging out of all devices will invalidate
               your active sessions everywhere.

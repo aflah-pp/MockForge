@@ -18,34 +18,12 @@ class ResourceService:
     """
     Service layer for resource and field business logic.
 
-    This service is responsible for:
-
-    - retrieving active resources
-    - creating resources
-    - generating unique resource slugs
-    - renaming resources
-    - publishing and unpublishing resources
-    - soft-deleting resources
-    - creating fields
-    - generating unique field slugs
-    - resolving field data types from generators
-    - validating generator configurations
-    - retrieving active fields
-    - updating fields
-    - soft-deleting fields
-
-    Resource and field lifecycle operations are intentionally kept
-    outside serializers and views so that business rules remain
-    centralized and reusable.
     """
 
     @staticmethod
     def _get_project_resource(project, resource_slug):
         """
         Return an active resource belonging to the given project.
-
-        Resource access is scoped to the project to prevent a resource
-        from another project from being resolved.
 
         Args:
             project:
@@ -76,9 +54,6 @@ class ResourceService:
     def _generate_unique_slug(project, name, instance=None):
         """
         Generate a unique resource slug within a project.
-
-        Resource slugs remain unique across all resource records,
-        including soft-deleted resources.
 
         Args:
             project:
@@ -129,9 +104,6 @@ class ResourceService:
     def _generate_unique_field_slug(resource, name, instance=None):
         """
         Generate a unique field slug within a resource.
-
-        Field slugs remain unique across all field records,
-        including soft-deleted fields.
 
         Args:
             resource:
@@ -200,9 +172,6 @@ class ResourceService:
         """
         Resolve the data type supported by a generator.
 
-        The generator registry is the single source of truth for
-        field data types. The client does not provide the data type.
-
         Args:
             generator_key:
                 Registered generator key.
@@ -243,25 +212,6 @@ class ResourceService:
     def create(project, validated_data, user):
         """
         Create a new resource under the given project.
-
-        The resource slug is generated automatically from the resource
-        name. The authenticated user is recorded as created_by.
-
-        Newly created resources are unpublished and active.
-
-        Args:
-            project:
-                Project that owns the resource.
-
-            validated_data:
-                Validated resource data.
-
-            user:
-                Authenticated user creating the resource.
-
-        Returns:
-            Resources:
-                The newly created resource.
         """
 
         name = validated_data["name"].strip()
@@ -309,19 +259,6 @@ class ResourceService:
         """
         Rename an active resource and regenerate its slug.
 
-        Args:
-            resource:
-                Resource being renamed.
-
-            name:
-                New resource name.
-
-            user:
-                Authenticated user performing the operation.
-
-        Returns:
-            Resources:
-                The updated resource.
         """
 
         ResourceService._validate_active_resource(resource)
@@ -379,19 +316,6 @@ class ResourceService:
         """
         Publish an active resource.
 
-        A published resource becomes eligible for public mock API
-        generation once its parent project is also published.
-
-        Args:
-            resource:
-                Resource being published.
-
-            user:
-                Authenticated user performing the operation.
-
-        Returns:
-            Resources:
-                The published resource.
         """
 
         ResourceService._validate_active_resource(resource)
@@ -428,19 +352,6 @@ class ResourceService:
         """
         Unpublish an active resource.
 
-        The resource remains available to its owner but is no longer
-        eligible for public mock API access.
-
-        Args:
-            resource:
-                Resource being unpublished.
-
-            user:
-                Authenticated user performing the operation.
-
-        Returns:
-            Resources:
-                The unpublished resource.
         """
 
         ResourceService._validate_active_resource(resource)
@@ -476,16 +387,6 @@ class ResourceService:
         """
         Return an active resource identified by project and slug.
 
-        Args:
-            project:
-                Project owning the resource.
-
-            resource_slug:
-                Resource slug.
-
-        Returns:
-            Resources:
-                The matching active resource.
         """
 
         return ResourceService._get_project_resource(
@@ -498,15 +399,6 @@ class ResourceService:
         """
         Return all active resources belonging to a project.
 
-        Soft-deleted resources are excluded.
-
-        Args:
-            project:
-                Project owning the resources.
-
-        Returns:
-            QuerySet:
-                Active resources belonging to the project.
         """
 
         return Resources.objects.filter(
@@ -520,23 +412,6 @@ class ResourceService:
         """
         Soft-delete a resource and all of its active fields.
 
-        The resource remains in the database for audit and recovery
-        purposes.
-
-        Args:
-            resource:
-                Resource being deleted.
-
-            user:
-                Authenticated user performing the deletion.
-
-        Returns:
-            Resources:
-                The soft-deleted resource.
-
-        Raises:
-            ValidationError:
-                If the resource has already been deleted.
         """
 
         if resource.deleted_at is not None:
@@ -587,40 +462,6 @@ class ResourceService:
         """
         Create a new field under an active resource.
 
-        The field data type is derived automatically from the selected
-        generator. The client does not provide the data type.
-
-        Generator configuration is validated before persistence to
-        ensure that:
-
-        - the generator exists
-        - the generator declares exactly one supported data type
-        - the generator configuration is valid
-
-        Args:
-            resource:
-                Resource owning the field.
-
-            validated_data:
-                Validated field data. Expected values include:
-
-                - name
-                - description
-                - generator_key
-                - generator_options
-
-            user:
-                Authenticated user creating the field.
-
-        Returns:
-            Fields:
-                The newly created field.
-
-        Raises:
-            ValidationError:
-                If the resource is inactive, the generator is invalid,
-                generator options are invalid, or the field name
-                conflicts with an existing field.
         """
 
         ResourceService._validate_active_resource(resource)
@@ -700,20 +541,6 @@ class ResourceService:
         """
         Return an active field identified by its resource and slug.
 
-        Args:
-            resource:
-                Resource owning the field.
-
-            field_slug:
-                Field slug.
-
-        Returns:
-            Fields:
-                The matching active field.
-
-        Raises:
-            Http404:
-                If the field does not exist or has been soft-deleted.
         """
 
         try:
@@ -729,15 +556,6 @@ class ResourceService:
         """
         Return all active fields belonging to a resource.
 
-        Soft-deleted fields are excluded.
-
-        Args:
-            resource:
-                Resource owning the fields.
-
-        Returns:
-            QuerySet:
-                Active fields belonging to the resource.
         """
 
         return resource.fields.filter(
@@ -750,33 +568,6 @@ class ResourceService:
         """
         Update an active field.
 
-        The field data type is always derived from the resolved
-        generator rather than being accepted from the client.
-
-        If the field name changes, its slug is regenerated.
-
-        Generator configuration is revalidated using the generator's
-        own supported data type.
-
-        Args:
-            field:
-                Field being updated.
-
-            validated_data:
-                Validated field data.
-
-            user:
-                Authenticated user performing the update.
-
-        Returns:
-            Fields:
-                The updated field.
-
-        Raises:
-            ValidationError:
-                If the field has been deleted, the generator is
-                invalid, generator options are invalid, or the field
-                name conflicts with another field.
         """
 
         if field.deleted_at is not None:
@@ -884,23 +675,6 @@ class ResourceService:
         """
         Soft-delete an active field.
 
-        The field remains in the database for audit purposes and is
-        excluded from normal field queries.
-
-        Args:
-            field:
-                Field being deleted.
-
-            user:
-                Authenticated user performing the deletion.
-
-        Returns:
-            Fields:
-                The soft-deleted field.
-
-        Raises:
-            ValidationError:
-                If the field has already been deleted.
         """
 
         if field.deleted_at is not None:

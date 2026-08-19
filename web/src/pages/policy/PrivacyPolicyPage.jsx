@@ -9,8 +9,8 @@ const sections = [
     icon: UserRound,
     title: "Information we collect",
     content: [
-      "When you create a MockForge account, we may collect your username, email address, first name, last name, password credentials, and optional profile information such as an avatar.",
-      "When you use MockForge, we may store the projects, resources, fields, configurations, and other content you intentionally create within the service.",
+      "When you create a Mokvio account, we may collect your username, email address, first name, last name, password credentials, and optional profile information such as an avatar.",
+      "When you use Mokvio, we may store the projects, resources, fields, configurations, and other content you intentionally create within the service.",
       "When you submit feedback, we associate the submission with your authenticated account so that we can understand who reported an issue or suggestion and follow up when necessary.",
     ],
   },
@@ -18,9 +18,9 @@ const sections = [
     icon: Database,
     title: "How we use your information",
     content: [
-      "We use account information to provide authentication, account management, and core MockForge functionality.",
+      "We use account information to provide authentication, account management, and core Mokvio functionality.",
       "Your project and configuration data is used to provide the mock API generation features you request.",
-      "Feedback is used to identify bugs, improve usability, prioritize features, and improve the overall MockForge project.",
+      "Feedback is used to identify bugs, improve usability, prioritize features, and improve the overall Mokvio project.",
       "We may use limited technical information to maintain reliability, security, and performance.",
     ],
   },
@@ -31,7 +31,7 @@ const sections = [
       "Passwords are stored using Django's password hashing mechanisms and are not stored as plain text.",
       "Authentication tokens are used to maintain authenticated sessions.",
       "You are responsible for keeping your account credentials and API keys secure.",
-      "Do not submit passwords, authentication tokens, API keys, private credentials, or other secrets through feedback forms or other areas of MockForge that are not specifically designed to store them.",
+      "Do not submit passwords, authentication tokens, API keys, private credentials, or other secrets through feedback forms or other areas of Mokvio that are not specifically designed to store them.",
     ],
   },
   {
@@ -39,8 +39,8 @@ const sections = [
     title: "Data deletion",
     content: [
       "You may deactivate your account from your account settings.",
-      "Account deletion and associated data handling are performed according to the functionality provided by the deployed MockForge service.",
-      "Because MockForge is open source, self-hosted installations may have different data retention and deletion behavior depending on how the operator configures the deployment.",
+      "Account deletion and associated data handling are performed according to the functionality provided by the deployed Mokvio service.",
+      "Because Mokvio is open source, self-hosted installations may have different data retention and deletion behavior depending on how the operator configures the deployment.",
     ],
   },
 ];
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
               <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Privacy Policy</h1>
 
               <p className="mt-1 text-sm text-muted-foreground">
-                How MockForge handles information when you use the hosted service.
+                How Mokvio handles information when you use the hosted service.
               </p>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function PrivacyPolicyPage() {
                 <p className="text-sm leading-6 text-muted-foreground">
                   <strong className="text-foreground">Last updated: August 12, 2026.</strong> This
                   Privacy Policy describes the information collected and used by the hosted
-                  MockForge service. MockForge is also available as open-source software, and
+                  Mokvio service. Mokvio is also available as open-source software, and
                   self-hosted installations may have their own privacy practices.
                 </p>
               </CardContent>
@@ -122,14 +122,14 @@ export default function PrivacyPolicyPage() {
 
               <CardContent className="space-y-3">
                 <p className="text-sm leading-6 text-muted-foreground">
-                  The MockForge source code may be used and deployed independently according to its
-                  applicable open-source license. If you operate your own MockForge instance, you
+                  The Mokvio source code may be used and deployed independently according to its
+                  applicable open-source license. If you operate your own Mokvio instance, you
                   are responsible for determining what information your deployment collects and for
                   providing any notices required for your users.
                 </p>
 
                 <p className="text-sm leading-6 text-muted-foreground">
-                  This policy applies to the hosted MockForge service and does not automatically
+                  This policy applies to the hosted Mokvio service and does not automatically
                   apply to independent third-party deployments.
                 </p>
               </CardContent>
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
 
               <CardContent>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  We may update this Privacy Policy as MockForge evolves. Material changes should be
+                  We may update this Privacy Policy as Mokvio evolves. Material changes should be
                   reflected by updating the effective date and, where appropriate, providing
                   additional notice through the service.
                 </p>

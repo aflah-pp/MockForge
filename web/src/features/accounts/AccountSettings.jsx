@@ -52,7 +52,7 @@ export default function AccountSettingsPage() {
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Edit Account</h1>
 
                 <p className="mt-1 text-sm text-muted-foreground sm:text-base">
-                  Update your MockForge account information.
+                  Update your Mokvio account information.
                 </p>
               </div>
             </div>

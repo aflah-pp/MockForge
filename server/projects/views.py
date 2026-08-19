@@ -19,25 +19,7 @@ logger = logging.getLogger(__name__)
 
 class ProjectViewSet(viewsets.GenericViewSet):
     """
-    API ViewSet for authenticated MockForge project management.
-
-    Project management is owner-scoped. Every project is resolved
-    through the authenticated user, preventing one user from
-    accessing another user's projects.
-
-    Supported operations:
-
-    - list active projects
-    - create a project
-    - retrieve a project
-    - rename a project
-    - publish a project
-    - unpublish a project
-    - toggle publication state
-    - soft-delete a project
-
-    Project slugs are used as the identifier within the
-    authenticated project-management API.
+    API ViewSet for authenticated Mokvio project management.
     """
 
     permission_classes = [IsAuthenticated]
@@ -297,9 +279,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
     def toggle_publish(self, request, slug=None):
         """
         Toggle the publication state of an active project.
-
-        The authenticated user is recorded as the actor who changed
-        the publication state.
         """
 
         project = self.get_object()

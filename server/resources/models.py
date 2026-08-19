@@ -47,7 +47,6 @@ class Resources(UUIDPrimaryKeyMixin, AuditMixin):
 class Fields(UUIDPrimaryKeyMixin, AuditMixin):
     """
     Model for a single Field/Column inside a Resource.
-    Example: "Price" field with generator "commerce.price" and options {"min": 10}.
     """
 
     resource = models.ForeignKey(

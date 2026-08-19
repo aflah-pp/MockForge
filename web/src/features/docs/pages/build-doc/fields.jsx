@@ -84,7 +84,7 @@ Clear field names make your API easier to understand.
 
 ## Generator
 
-The generator controls how MockForge creates the value.
+The generator controls how Mokvio creates the value.
 
 For example:
 
@@ -140,7 +140,7 @@ The generated values can change between requests.
 
 Your resource now has fields.
 
-Continue with **Data Generators** to learn how MockForge creates realistic values.
+Continue with **Data Generators** to learn how Mokvio creates realistic values.
 `;
 
 function Fields() {

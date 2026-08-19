@@ -5,9 +5,9 @@ import DocsPagination from "@/features/docs/components/navigation/doc-pagination
 const content = `
 # Data Generators
 
-Data generators tell MockForge how to create fake values for your fields.
+Data generators tell Mokvio how to create fake values for your fields.
 
-Instead of manually entering fake data, you choose a generator and MockForge creates the values for you.
+Instead of manually entering fake data, you choose a generator and Mokvio creates the values for you.
 
 ## How generators work
 
@@ -161,7 +161,7 @@ Product 4
 ...
 \`\`\`
 
-Generators allow MockForge to create the values automatically.
+Generators allow Mokvio to create the values automatically.
 
 This is useful when building:
 
@@ -193,7 +193,7 @@ You can configure:
 | stock | Integer |
 | image | Image URL |
 
-MockForge uses these settings when generating the API response.
+Mokvio uses these settings when generating the API response.
 
 ## Generator configuration
 
@@ -215,7 +215,7 @@ Product
 
 Your project now has a resource, fields, and generators.
 
-Continue with **Use Your API** to learn how to connect your MockForge API to your application.
+Continue with **Use Your API** to learn how to connect your Mokvio API to your application.
 `;
 
 function DataGenerators() {

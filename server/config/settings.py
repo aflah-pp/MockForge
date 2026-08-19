@@ -298,7 +298,7 @@ JWT_REFRESH_COOKIE_PATH = env(
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-DEFAULT_FROM_EMAIL = "noreply@mockforge.local"
+DEFAULT_FROM_EMAIL = "noreply@mokvio.local"
 
 
 SECURE_SSL_REDIRECT = env.bool(
